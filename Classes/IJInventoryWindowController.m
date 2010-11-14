@@ -420,6 +420,14 @@
 																	   [propertiesWindow setAlphaValue:0.0];
 																   }];
 	propertiesViewController.item = item;
+	
+	if (propertiesViewController.item.damage == -1000){
+		[propertiesViewController setState:YES];
+	}else {
+		[propertiesViewController setState:NO];
+	}
+
+	
 	[propertiesWindow setPoint:point side:MAPositionRight];
 	[propertiesWindow makeKeyAndOrderFront:nil];
 	[propertiesWindow setAlphaValue:1.0];
