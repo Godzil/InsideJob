@@ -63,5 +63,6 @@
 - (IBAction)makeSearchFieldFirstResponder:(id)sender;
 
 - (IBAction)setNextDay:(id)sender;
+- (IBAction)setNextNight:(id)sender;
 
 @end

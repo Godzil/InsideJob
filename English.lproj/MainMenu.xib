@@ -381,7 +381,7 @@
 							</object>
 						</object>
 					</object>
-					<object class="NSMenuItem" id="558317378">
+					<object class="NSMenuItem" id="1003822312">
 						<reference key="NSMenu" ref="649796088"/>
 						<string key="NSTitle">Tools</string>
 						<string key="NSKeyEquiv"/>
@@ -389,14 +389,23 @@
 						<reference key="NSOnImage" ref="35465992"/>
 						<reference key="NSMixedImage" ref="502551668"/>
 						<string key="NSAction">submenuAction:</string>
-						<object class="NSMenu" key="NSSubmenu" id="183790792">
+						<object class="NSMenu" key="NSSubmenu" id="500439511">
 							<string key="NSTitle">Tools</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
-								<object class="NSMenuItem" id="709059208">
-									<reference key="NSMenu" ref="183790792"/>
+								<object class="NSMenuItem" id="195507455">
+									<reference key="NSMenu" ref="500439511"/>
 									<string key="NSTitle">Next Sunrise</string>
 									<string key="NSKeyEquiv">D</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+								<object class="NSMenuItem" id="431631770">
+									<reference key="NSMenu" ref="500439511"/>
+									<string key="NSTitle">Next Sunset</string>
+									<string key="NSKeyEquiv">N</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="35465992"/>
@@ -1396,9 +1405,17 @@
 					<object class="IBActionConnection" key="connection">
 						<string key="label">setNextDay:</string>
 						<reference key="source" ref="760161335"/>
-						<reference key="destination" ref="709059208"/>
+						<reference key="destination" ref="195507455"/>
 					</object>
 					<int key="connectionID">705</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">setNextNight:</string>
+						<reference key="source" ref="760161335"/>
+						<reference key="destination" ref="431631770"/>
+					</object>
+					<int key="connectionID">708</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1438,7 +1455,7 @@
 							<reference ref="952259628"/>
 							<reference ref="379814623"/>
 							<reference ref="448692316"/>
-							<reference ref="558317378"/>
+							<reference ref="1003822312"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -1981,26 +1998,32 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">696</int>
-						<reference key="object" ref="558317378"/>
+						<reference key="object" ref="1003822312"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="183790792"/>
+							<reference ref="500439511"/>
 						</object>
 						<reference key="parent" ref="649796088"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">701</int>
-						<reference key="object" ref="183790792"/>
+						<reference key="object" ref="500439511"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
-							<reference ref="709059208"/>
+							<reference ref="195507455"/>
+							<reference ref="431631770"/>
 						</object>
-						<reference key="parent" ref="558317378"/>
+						<reference key="parent" ref="1003822312"/>
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">702</int>
-						<reference key="object" ref="709059208"/>
-						<reference key="parent" ref="183790792"/>
+						<reference key="object" ref="195507455"/>
+						<reference key="parent" ref="500439511"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">706</int>
+						<reference key="object" ref="431631770"/>
+						<reference key="parent" ref="500439511"/>
 					</object>
 				</object>
 			</object>
@@ -2146,6 +2169,7 @@
 					<string>701.IBEditorWindowLastContentRect</string>
 					<string>701.IBPluginDependency</string>
 					<string>702.IBPluginDependency</string>
+					<string>706.IBPluginDependency</string>
 					<string>75.IBPluginDependency</string>
 					<string>75.ImportedFromIB2</string>
 					<string>81.IBEditorWindowLastContentRect</string>
@@ -2317,7 +2341,8 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{585, 813}, {176, 23}}</string>
+					<string>{{585, 793}, {176, 43}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2348,7 +2373,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">705</int>
+			<int key="maxID">708</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2382,11 +2407,13 @@
 							<string>makeSearchFieldFirstResponder:</string>
 							<string>menuSelectWorld:</string>
 							<string>setNextDay:</string>
+							<string>setNextNight:</string>
 							<string>updateItemSearchFilter:</string>
 							<string>worldSelectionChanged:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2401,6 +2428,7 @@
 							<string>makeSearchFieldFirstResponder:</string>
 							<string>menuSelectWorld:</string>
 							<string>setNextDay:</string>
+							<string>setNextNight:</string>
 							<string>updateItemSearchFilter:</string>
 							<string>worldSelectionChanged:</string>
 						</object>
@@ -2416,6 +2444,10 @@
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">setNextDay:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">setNextNight:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

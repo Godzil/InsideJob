@@ -331,6 +331,16 @@
 	[self setWorldTime:newTime];
 }
 
+- (IBAction)setNextNight:(id)sender
+{
+	int result;
+	int wTime = [[self worldTime] intValue];
+	result =wTime +(12000 - (wTime % 12000));
+	
+	NSNumber *newTime = [NSNumber numberWithInt:result];
+	[self setWorldTime:newTime];
+}
+
 
 #pragma mark -
 #pragma mark IJInventoryViewDelegate
