@@ -308,10 +308,12 @@
 	return YES;
 }
 
+
 - (NSNumber *)worldTime
 {
 	return 	[level worldTimeContainer].numberValue;
 }
+
 - (void)setWorldTime:(NSNumber *)number
 {
 	[self willChangeValueForKey:@"worldTime"];
@@ -319,6 +321,16 @@
 	[self didChangeValueForKey:@"worldTime"];
 	[self markDirty];
 }
+- (IBAction)setNextDay:(id)sender
+{
+	int result;
+	int wTime = [[self worldTime] intValue];
+	result =wTime +(24000 - (wTime % 24000));
+
+	NSNumber *newTime = [NSNumber numberWithInt:result];
+	[self setWorldTime:newTime];
+}
+
 
 #pragma mark -
 #pragma mark IJInventoryViewDelegate

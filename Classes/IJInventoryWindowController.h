@@ -62,4 +62,6 @@
 - (IBAction)updateItemSearchFilter:(id)sender;
 - (IBAction)makeSearchFieldFirstResponder:(id)sender;
 
+- (IBAction)setNextDay:(id)sender;
+
 @end
