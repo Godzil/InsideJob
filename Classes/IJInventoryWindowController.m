@@ -79,6 +79,7 @@
 	{
 		dirty = NO; // Slightly hacky -- prevent the alert from being put up again.
 		[self loadWorldAtIndex:attemptedLoadWorldIndex];
+		[self setDocumentEdited: NO];
 	}
 }
 
@@ -177,6 +178,7 @@
 	[armorView setItems:armorInventory];
 	
 	dirty = NO;
+	[self setDocumentEdited: NO];
 	statusTextField.stringValue = @"";
 	loadedWorldIndex = worldIndex;
 }
@@ -255,12 +257,14 @@
 	}
 	
 	dirty = NO;
+	[self setDocumentEdited: NO];
 	statusTextField.stringValue = @"Saved.";
 }
 
 - (void)markDirty
 {
 	dirty = YES;
+	[self setDocumentEdited: YES];
 	statusTextField.stringValue = @"World has unsaved changes.";
 }
 
