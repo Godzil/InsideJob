@@ -341,6 +341,25 @@
 	[self setWorldTime:newTime];
 }
 
+- (IBAction)setNextMidnight:(id)sender
+{
+	int result;
+	int wTime = [[self worldTime] intValue];
+	result =wTime +(18000 - (wTime % 18000));
+	
+	NSNumber *newTime = [NSNumber numberWithInt:result];
+	[self setWorldTime:newTime];
+}
+
+- (IBAction)setNextNoon:(id)sender
+{
+	int result;
+	int wTime = [[self worldTime] intValue];
+	result =wTime +(6000 - (wTime % 6000));
+	
+	NSNumber *newTime = [NSNumber numberWithInt:result];
+	[self setWorldTime:newTime];
+}
 
 #pragma mark -
 #pragma mark IJInventoryViewDelegate

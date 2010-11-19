@@ -64,5 +64,7 @@
 
 - (IBAction)setNextDay:(id)sender;
 - (IBAction)setNextNight:(id)sender;
+- (IBAction)setNextNoon:(id)sender;
+- (IBAction)setNextMidnight:(id)sender;
 
 @end
