@@ -62,6 +62,8 @@
 	NSUInteger itemsPerRow = 9;
 	NSUInteger pixelsPerColumn = 36;
 	NSUInteger pixelsPerRow = 56;
+	NSImage *atlas;
+	BOOL notFound = FALSE; 
 	
 	int index = 0;
 	
@@ -93,7 +95,9 @@
 	else
 	{
 		NSLog(@"%s error: unrecognized item id %d", __PRETTY_FUNCTION__, itemId);
-		return nil;
+		index = 0;
+		atlasOffset = NSMakePoint(1, 30);
+		notFound = TRUE;
 	}
 	
 	atlasOffset.x += pixelsPerColumn * (index % itemsPerRow);
@@ -101,8 +105,12 @@
 	
 	NSRect atlasRect = NSMakeRect(atlasOffset.x, atlasOffset.y, itemImageSize.width, itemImageSize.height);
 	
-	
-	NSImage *atlas = [NSImage imageNamed:@"DataValuesV110Transparent.png"];
+	if (notFound != TRUE) {
+		atlas = [NSImage imageNamed:@"DataValuesV110Transparent.png"];
+	}else {
+		atlas = [NSImage imageNamed:@"blockNotFound.png"];
+	}
+
 	NSImage *output = [[NSImage alloc] initWithSize:itemImageSize];
 	
 	atlasRect.origin.y = atlas.size.height - atlasRect.origin.y;

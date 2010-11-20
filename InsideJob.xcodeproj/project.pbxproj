@@ -28,6 +28,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		BA24598B1297428900F8B9C2 /* blockNotFound.png in Resources */ = {isa = PBXBuildFile; fileRef = BA24598A1297428900F8B9C2 /* blockNotFound.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,7 @@
 		66BCFE61125FCEC6005A23F4 /* DataValuesV110Transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DataValuesV110Transparent.png; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* InsideJob-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "InsideJob-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Inside Job.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Inside Job.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BA24598A1297428900F8B9C2 /* blockNotFound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blockNotFound.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,6 +220,7 @@
 		66BC07711262823E005A23F4 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				BA24598A1297428900F8B9C2 /* blockNotFound.png */,
 				66BCFE61125FCEC6005A23F4 /* DataValuesV110Transparent.png */,
 				66BCFC35125EA53E005A23F4 /* InsideJob.icns */,
 			);
@@ -284,6 +287,7 @@
 				66BCFC36125EA53E005A23F4 /* InsideJob.icns in Resources */,
 				66BCFE62125FCEC6005A23F4 /* DataValuesV110Transparent.png in Resources */,
 				66BC077312628257005A23F4 /* ItemPropertiesView.xib in Resources */,
+				BA24598B1297428900F8B9C2 /* blockNotFound.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
