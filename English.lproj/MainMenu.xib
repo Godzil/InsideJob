@@ -393,6 +393,42 @@
 							<string key="NSTitle">Tools</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMenuItem" id="816451080">
+									<reference key="NSMenu" ref="500439511"/>
+									<string key="NSTitle">Save Inventory</string>
+									<string key="NSKeyEquiv">S</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+								<object class="NSMenuItem" id="241177871">
+									<reference key="NSMenu" ref="500439511"/>
+									<string key="NSTitle">Load Inventory</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+								<object class="NSMenuItem" id="946595032">
+									<reference key="NSMenu" ref="500439511"/>
+									<string key="NSTitle">Clear Inventory</string>
+									<string key="NSKeyEquiv">C</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
+								<object class="NSMenuItem" id="864243634">
+									<reference key="NSMenu" ref="500439511"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="35465992"/>
+									<reference key="NSMixedImage" ref="502551668"/>
+								</object>
 								<object class="NSMenuItem" id="195507455">
 									<reference key="NSMenu" ref="500439511"/>
 									<string key="NSTitle">Next Sunrise</string>
@@ -413,8 +449,8 @@
 								</object>
 								<object class="NSMenuItem" id="431631770">
 									<reference key="NSMenu" ref="500439511"/>
-									<string key="NSTitle">Next Sunset</string>
-									<string key="NSKeyEquiv">S</string>
+									<string key="NSTitle">Next Nightfall</string>
+									<string key="NSKeyEquiv">F</string>
 									<int key="NSKeyEquivModMask">1048576</int>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<reference key="NSOnImage" ref="35465992"/>
@@ -501,6 +537,7 @@
 								<bool key="EncodedWithXMLCoder">YES</bool>
 								<object class="NSMenuItem" id="105068016">
 									<reference key="NSMenu" ref="992780483"/>
+									<bool key="NSIsDisabled">YES</bool>
 									<string key="NSTitle">InsideJob Help</string>
 									<string key="NSKeyEquiv">?</string>
 									<int key="NSKeyEquivModMask">1048576</int>
@@ -1451,6 +1488,30 @@
 					</object>
 					<int key="connectionID">712</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">saveInventoryItems:</string>
+						<reference key="source" ref="760161335"/>
+						<reference key="destination" ref="816451080"/>
+					</object>
+					<int key="connectionID">719</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">emptyInventory:</string>
+						<reference key="source" ref="760161335"/>
+						<reference key="destination" ref="946595032"/>
+					</object>
+					<int key="connectionID">720</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">loadInventoryItems:</string>
+						<reference key="source" ref="760161335"/>
+						<reference key="destination" ref="241177871"/>
+					</object>
+					<int key="connectionID">722</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -2048,6 +2109,10 @@
 							<reference ref="431631770"/>
 							<reference ref="19459331"/>
 							<reference ref="234384199"/>
+							<reference ref="946595032"/>
+							<reference ref="864243634"/>
+							<reference ref="816451080"/>
+							<reference ref="241177871"/>
 						</object>
 						<reference key="parent" ref="1003822312"/>
 					</object>
@@ -2069,6 +2134,26 @@
 					<object class="IBObjectRecord">
 						<int key="objectID">711</int>
 						<reference key="object" ref="234384199"/>
+						<reference key="parent" ref="500439511"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">713</int>
+						<reference key="object" ref="864243634"/>
+						<reference key="parent" ref="500439511"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">714</int>
+						<reference key="object" ref="946595032"/>
+						<reference key="parent" ref="500439511"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">717</int>
+						<reference key="object" ref="816451080"/>
+						<reference key="parent" ref="500439511"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">721</int>
+						<reference key="object" ref="241177871"/>
 						<reference key="parent" ref="500439511"/>
 					</object>
 				</object>
@@ -2218,6 +2303,10 @@
 					<string>706.IBPluginDependency</string>
 					<string>709.IBPluginDependency</string>
 					<string>711.IBPluginDependency</string>
+					<string>713.IBPluginDependency</string>
+					<string>714.IBPluginDependency</string>
+					<string>717.IBPluginDependency</string>
+					<string>721.IBPluginDependency</string>
 					<string>75.IBPluginDependency</string>
 					<string>75.ImportedFromIB2</string>
 					<string>81.IBEditorWindowLastContentRect</string>
@@ -2294,15 +2383,15 @@
 					<integer value="1"/>
 					<string>{74, 862}</string>
 					<string>{{6, 978}, {478, 20}}</string>
-					<string>{{1099, 52}, {585, 396}}</string>
+					<string>{{855, 52}, {585, 396}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{1099, 52}, {585, 396}}</string>
+					<string>{{855, 52}, {585, 396}}</string>
 					<integer value="1"/>
 					<string>{{33, 99}, {480, 360}}</string>
 					<string>{3.40282e+38, 3.40282e+38}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{656, 813}, {169, 23}}</string>
+					<string>{{712, 813}, {169, 23}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2389,7 +2478,11 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{585, 753}, {189, 83}}</string>
+					<string>{{585, 683}, {195, 153}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2423,7 +2516,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">712</int>
+			<int key="maxID">722</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2454,8 +2547,11 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>emptyInventory:</string>
+							<string>loadInventoryItems:</string>
 							<string>makeSearchFieldFirstResponder:</string>
 							<string>menuSelectWorld:</string>
+							<string>saveInventoryItems:</string>
 							<string>setNextDay:</string>
 							<string>setNextMidnight:</string>
 							<string>setNextNight:</string>
@@ -2465,6 +2561,9 @@
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>id</string>
+							<string>id</string>
+							<string>id</string>
 							<string>id</string>
 							<string>id</string>
 							<string>id</string>
@@ -2479,8 +2578,11 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>emptyInventory:</string>
+							<string>loadInventoryItems:</string>
 							<string>makeSearchFieldFirstResponder:</string>
 							<string>menuSelectWorld:</string>
+							<string>saveInventoryItems:</string>
 							<string>setNextDay:</string>
 							<string>setNextMidnight:</string>
 							<string>setNextNight:</string>
@@ -2491,11 +2593,23 @@
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<object class="IBActionInfo">
+								<string key="name">emptyInventory:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">loadInventoryItems:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
 								<string key="name">makeSearchFieldFirstResponder:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">
 								<string key="name">menuSelectWorld:</string>
+								<string key="candidateClassName">id</string>
+							</object>
+							<object class="IBActionInfo">
+								<string key="name">saveInventoryItems:</string>
 								<string key="candidateClassName">id</string>
 							</object>
 							<object class="IBActionInfo">

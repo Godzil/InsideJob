@@ -29,6 +29,7 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		BA24598B1297428900F8B9C2 /* blockNotFound.png in Resources */ = {isa = PBXBuildFile; fileRef = BA24598A1297428900F8B9C2 /* blockNotFound.png */; };
+		BA3329A9129889860079447B /* NSFileManager+DirectoryLocations.m in Sources */ = {isa = PBXBuildFile; fileRef = BA3329A8129889860079447B /* NSFileManager+DirectoryLocations.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,8 @@
 		8D1107310486CEB800E47090 /* InsideJob-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "InsideJob-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Inside Job.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Inside Job.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BA24598A1297428900F8B9C2 /* blockNotFound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blockNotFound.png; sourceTree = "<group>"; };
+		BA3329A7129889860079447B /* NSFileManager+DirectoryLocations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+DirectoryLocations.h"; sourceTree = "<group>"; };
+		BA3329A8129889860079447B /* NSFileManager+DirectoryLocations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+DirectoryLocations.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +194,8 @@
 				668B255B125D5BCA0060BF71 /* NSData+CocoaDevAdditions.m */,
 				66BC04F612619072005A23F4 /* NSColor+Additions.h */,
 				66BC04F712619072005A23F4 /* NSColor+Additions.m */,
+				BA3329A7129889860079447B /* NSFileManager+DirectoryLocations.h */,
+				BA3329A8129889860079447B /* NSFileManager+DirectoryLocations.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -309,6 +314,7 @@
 				66BC033B1260CC59005A23F4 /* MAAttachedWindow.m in Sources */,
 				66BC03621260D095005A23F4 /* IJItemPropertiesViewController.m in Sources */,
 				66BC04F812619072005A23F4 /* NSColor+Additions.m in Sources */,
+				BA3329A9129889860079447B /* NSFileManager+DirectoryLocations.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,6 +12,7 @@
 #import "IJInventoryView.h"
 #import "IJItemPropertiesViewController.h"
 #import "MAAttachedWindow.h"
+#import "NSFileManager+DirectoryLocations.h"
 
 @interface IJInventoryWindowController ()
 - (void)saveWorld;
@@ -359,6 +360,103 @@
 	int number = 6000;
 	[self calcTimePoints:number];
 }
+
+- (void)clearInventory{
+	
+	[armorInventory removeAllObjects];
+	[quickInventory removeAllObjects];
+	[normalInventory removeAllObjects];
+	
+	[inventoryView setItems:normalInventory];
+	[quickView setItems:quickInventory];
+	[armorView setItems:armorInventory];
+	
+	[self markDirty];
+}
+
+- (void)saveInventory
+{
+	
+	NSString *path = [[NSFileManager defaultManager] applicationSupportDirectory];
+	NSLog(@"%@",path);
+	NSString *file = @"Inventory.plist";
+	
+	
+	NSString *InventoryPath = [path stringByAppendingPathComponent:file];
+	
+	NSLog(@"%@",InventoryPath);
+
+	
+	NSMutableArray *newInventory = [NSMutableArray array];
+	
+	for (NSArray *items in [NSArray arrayWithObjects:armorInventory, quickInventory, normalInventory, nil])
+	{
+		for (IJInventoryItem *item in items)
+		{
+			if (item.count > 0 && item.itemId > 0)
+				[newInventory addObject:item];
+		}
+	}
+	
+	[NSKeyedArchiver archiveRootObject: newInventory toFile:InventoryPath];
+}
+
+-(void)loadInventory
+{
+	NSString *path = [[NSFileManager defaultManager] applicationSupportDirectory];
+	NSString *file = @"Inventory.plist";
+	NSString *InventoryPath = [path stringByAppendingPathComponent:file];
+	
+	
+	[self clearInventory];
+	NSArray *newInventory = [NSKeyedUnarchiver unarchiveObjectWithFile:InventoryPath];
+	
+	for (int i = 0; i < IJInventorySlotQuickLast + 1 - IJInventorySlotQuickFirst; i++)
+		[quickInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotQuickFirst + i]];
+	
+	for (int i = 0; i < IJInventorySlotNormalLast + 1 - IJInventorySlotNormalFirst; i++)
+		[normalInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotNormalFirst + i]];
+	
+	for (int i = 0; i < IJInventorySlotArmorLast + 1 - IJInventorySlotArmorFirst; i++)
+		[armorInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotArmorFirst + i]];
+	
+	for (IJInventoryItem *item in newInventory)
+	{
+		if (IJInventorySlotQuickFirst <= item.slot && item.slot <= IJInventorySlotQuickLast)
+		{
+			[quickInventory replaceObjectAtIndex:item.slot - IJInventorySlotQuickFirst withObject:item];
+		}
+		else if (IJInventorySlotNormalFirst <= item.slot && item.slot <= IJInventorySlotNormalLast)
+		{
+			[normalInventory replaceObjectAtIndex:item.slot - IJInventorySlotNormalFirst withObject:item];
+		}
+		else if (IJInventorySlotArmorFirst <= item.slot && item.slot <= IJInventorySlotArmorLast)
+		{
+			[armorInventory replaceObjectAtIndex:item.slot - IJInventorySlotArmorFirst withObject:item];
+		}
+	}
+	
+	[inventoryView setItems:normalInventory];
+	[quickView setItems:quickInventory];
+	[armorView setItems:armorInventory];
+	
+}
+
+- (IBAction)emptyInventory:(id)sender
+{
+	[self clearInventory];
+}
+
+- (IBAction)saveInventoryItems:(id)sender
+{
+	[self saveInventory];
+}
+
+- (IBAction)loadInventoryItems:(id)sender
+{
+	[self loadInventory];
+}
+
 
 #pragma mark -
 #pragma mark IJInventoryViewDelegate

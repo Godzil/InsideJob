@@ -67,4 +67,9 @@
 - (IBAction)setNextNoon:(id)sender;
 - (IBAction)setNextMidnight:(id)sender;
 
+- (IBAction)emptyInventory:(id)sender;
+- (IBAction)saveInventoryItems:(id)sender;
+- (IBAction)loadInventoryItems:(id)sender;
+
+
 @end
