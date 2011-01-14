@@ -18,7 +18,12 @@
 18,Leaves
 19,Sponge
 20,Glass
-35,White Cloth
+21,Lapis Lazuli Ore
+22,Lapis Lazuli Block
+23,Dispenser
+24,Sandstone
+25,Note Block
+35,Wool
 37,Yellow Flower
 38,Red Rose
 39,Brown Mushroom
@@ -69,11 +74,12 @@
 84,Jukebox
 85,Fence
 86,Pumpkin
-87,Hellstone
-88,Slow Sand
-89,Lightstone Ore
+87,Netherrack
+88,Soul Sand
+89,Glowstone
 90,Portal
 91,Jack-O-Lantern
+92,Cake Block
 256,Iron Spade
 257,Iron Pickaxe
 258,Iron Axe
@@ -156,7 +162,7 @@
 335,Milk Bucket
 336,Clay Brick
 337,Clay Balls
-338,Reed
+338,Sugar Cane
 339,Paper
 340,Book
 341,Slime Ball
@@ -166,8 +172,30 @@
 345,Compass
 346,Fishing Rod
 347,Watch
-348,Lightstone Dust
+348,Glowstone Dust
 349,Raw Fish
 350,Cooked Fish
+#Dye
+#351,Ink sack,0
+#351,Rose Red,1
+#351,Cactus Green,2
+#351,Brown,3
+#351,Lapis Lazuli Dye,4
+#351,Purple Dye,5
+#351,Cyan Dye,6
+#351,Light Gray Dye,7
+#351,Gray Dye,8
+#351,Pink Dye,9
+#351,Lime Dye,10
+#351,Dandelion Yellow Dye,11
+#351,Light Blue Dye,12
+#351,Magenta Dye,13
+#351,Orange Dye,14
+#351,Bone Meal,15
+351,Dye
+#Dye End
+352,Bone
+353,Sugar
+354,Cake
 2256,Gold Record
 2257,Green Record
