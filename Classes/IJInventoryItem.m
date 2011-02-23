@@ -67,30 +67,38 @@
 	
 	int index = 0;
 	
-	if (itemId <= 92)
+	if (itemId <= 94)
 	{
-		if (itemId <= 25)
+		if (itemId <= 17){
 			index = itemId - 1; // first item is 1
-		else if (itemId == 35)
-			index = itemId - (35 - 25);
-		else if (itemId >= 37)
-			index = itemId - (37 - 26);
+		}
+		else if (itemId <= 35 ){
+			index = itemId + 1;
+		}
+		else if (itemId >= 37){
+			index = itemId + 6;
+		}
 		atlasOffset = NSMakePoint(36, 75);
 	}
-	else if (itemId >= 256 && itemId <= 355)
+	else if (itemId >= 256 && itemId <= 351)
 	{
 		index = itemId - 256;
-		atlasOffset = NSMakePoint(445, 23+52);
+		atlasOffset = NSMakePoint(445, 75);
+	}
+	else if (itemId >= 352 && itemId <= 356)
+	{
+		index = itemId - 241;
+		atlasOffset = NSMakePoint(445, 75);
 	}
 	else if (itemId == 2256)
 	{
 		index = 0;
-		atlasOffset = NSMakePoint(445, pixelsPerRow*12+17);
+		atlasOffset = NSMakePoint(445+pixelsPerColumn*8, pixelsPerRow*13 + 18);
 	}
 	else if (itemId == 2257)
 	{
 		index = 0;
-		atlasOffset = NSMakePoint(445+pixelsPerColumn, pixelsPerRow*12+17);
+		atlasOffset = NSMakePoint(445, pixelsPerRow*14+18);
 	}
 	else
 	{

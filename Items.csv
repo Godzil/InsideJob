@@ -32,6 +32,10 @@
 42,Iron Block
 43,Double Step
 44,Step
+# 44,Stone Step, 0
+# 44,Sandstone Step, 1
+# 44,Wodden Step, 2
+# 44,Cobblestone Step, 3
 45,Brick
 46,TNT
 47,Bookcase
@@ -80,6 +84,8 @@
 90,Portal
 91,Jack-O-Lantern
 92,Cake Block
+93,Redstone Repeater (off)
+94,Redstone Repeater (on)
 256,Iron Spade
 257,Iron Pickaxe
 258,Iron Axe
@@ -197,5 +203,6 @@
 352,Bone
 353,Sugar
 354,Cake
+355,Bed
 2256,Gold Record
 2257,Green Record
