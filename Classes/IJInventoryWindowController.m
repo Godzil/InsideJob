@@ -16,6 +16,7 @@
 @interface IJInventoryWindowController ()
 - (void)saveWorld;
 - (void)loadWorldAtIndex:(int)worldIndex;
+- (void)loadWorldAtFolder:(NSString *)worldFolder;
 - (BOOL)isDocumentEdited;
 @end
 
@@ -77,20 +78,29 @@
 	if (returnCode == NSAlertDefaultReturn) // Save
 	{
 		[self saveWorld];
-		[self loadWorldAtIndex:attemptedLoadWorldIndex];
+      [self loadWorldAtFolder:attemptedLoadWorldFolder];
 	}
 	else if (returnCode == NSAlertAlternateReturn) // Don't save
 	{
 		[self setDocumentEdited:NO]; // Slightly hacky -- prevent the alert from being put up again.
-		[self loadWorldAtIndex:attemptedLoadWorldIndex];
+      [self loadWorldAtFolder:attemptedLoadWorldFolder];
 	}
 }
 
-- (void)loadWorldAtIndex:(int)worldIndex
+- (void)loadWorldPlayerInventory:(NSString *)PlayerName
+{
+   /*
+    * If passing NULL to PlayerName, we will use level.dat instead of
+    * Players/PlayerName.dat file 
+    */
+   
+}
+
+- (void)loadWorldAtFolder:(NSString *)worldPath
 {
 	if ([self isDocumentEdited])
 	{
-		attemptedLoadWorldIndex = worldIndex;
+      attemptedLoadWorldFolder = worldPath;
 		NSBeginInformationalAlertSheet(@"Do you want to save the changes you made in this world?", @"Save", @"Don't Save", @"Cancel", self.window, self, @selector(dirtyLoadSheetDidEnd:returnCode:contextInfo:), nil, nil, @"Your changes will be lost if you do not save them.");
 		return;
 	}
@@ -111,22 +121,9 @@
 	[self didChangeValueForKey:@"worldTime"];
 	
 	statusTextField.stringValue = @"No world loaded.";
-	
-	if (![IJMinecraftLevel worldExistsAtIndex:worldIndex])
-	{
-		NSBeginCriticalAlertSheet(@"No world exists in that slot.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Please create a new single player world in this slot using Minecraft and try again.");
-		return;
-	}
-	
-	sessionLockValue = [IJMinecraftLevel writeToSessionLockAtIndex:worldIndex];
-	if (![IJMinecraftLevel checkSessionLockAtIndex:worldIndex value:sessionLockValue])
-	{
-		NSBeginCriticalAlertSheet(@"Error loading world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable obtain the session lock.");
-		return;
-	}
-	
-	NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtIndex:worldIndex];
-	
+		
+	NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtFolder:worldPath];
+   
 	NSData *fileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:levelPath]];
 	
 	if (!fileData)
@@ -138,8 +135,19 @@
 	
 	[self willChangeValueForKey:@"worldTime"];
 	
-	level = [[IJMinecraftLevel nbtContainerWithData:fileData] retain];
-	inventory = [[level inventory] retain];
+   /* Now search for first player .dat file (but by default try to load from level.dat */
+   NSString *playerPath = [IJMinecraftLevel pathForLevelDatAtFolder:worldPath];
+   NSData *playerFileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:playerPath]];
+	if (!fileData)
+	{
+		// Error loading 
+		NSBeginCriticalAlertSheet(@"Error loading world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"InsideJob was unable to load the level at %@.", levelPath);
+		return;
+	}
+   
+	level  = [[IJMinecraftLevel nbtContainerWithData:fileData] retain];
+   player = [[IJMinecraftLevel nbtContainerWithData:playerFileData] retain];
+	inventory = [[player inventory] retain];
 	
 	[self didChangeValueForKey:@"worldTime"];
 	
@@ -173,8 +181,8 @@
 		}
 	}
 	
-//	NSLog(@"normal: %@", normalInventory);
-//	NSLog(@"quick: %@", quickInventory);
+   //	NSLog(@"normal: %@", normalInventory);
+   //	NSLog(@"quick: %@", quickInventory);
 	
 	[inventoryView setItems:normalInventory];
 	[quickView setItems:quickInventory];
@@ -182,11 +190,21 @@
 	
 	[self setDocumentEdited:NO];
 	statusTextField.stringValue = @"";
-	loadedWorldIndex = worldIndex;
+	loadedWorldFolder = worldPath;
 }
+
+- (void)loadWorldAtIndex:(int)worldIndex
+{
+   NSString *worldPath;
+   worldPath = [IJMinecraftLevel pathForWorldAtIndex:worldIndex];
+   
+   [self loadWorldAtFolder: worldPath];
+}
+
 
 - (void)saveWorld
 {
+#if 0
 	int worldIndex = loadedWorldIndex;
 	if (inventory == nil)
 		return; // no world loaded, nothing to save
@@ -260,6 +278,7 @@
 	
 	[self setDocumentEdited:NO];
 	statusTextField.stringValue = @"Saved.";
+#endif
 }
 
 - (void)setDocumentEdited:(BOOL)edited
@@ -282,6 +301,34 @@
 	int worldIndex = [sender tag];
 	[self loadWorldAtIndex:worldIndex];
 	[worldSelectionControl setSelectedSegment:worldIndex - 1];
+}
+
+- (IBAction)menuSelectWorldFromPath:(id)sender
+{
+   NSInteger openResult;
+   /* Ask user for world folder path */
+   NSOpenPanel *panel = [NSOpenPanel openPanel];   
+   NSString *worldPath;
+   
+   /* Only allow to choose a folder */
+   [panel setCanChooseDirectories:YES];
+   [panel setCanChooseFiles:NO];
+   openResult = [panel runModal];
+   
+   if (openResult == NSOKButton)
+   {
+      worldPath = [[panel directoryURL] path];
+    
+      /* Verify for level.dat */
+      if (![IJMinecraftLevel worldExistsAtFolder: worldPath])
+      {
+         NSBeginCriticalAlertSheet(@"No world exists in that slot.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Please create a new single player world in this slot using Minecraft and try again.");
+         return;
+      }
+      /* Now try to open the world... */
+      [self loadWorldAtFolder:[[panel directoryURL] path]];
+      
+   }
 }
 
 - (IBAction)worldSelectionChanged:(id)sender

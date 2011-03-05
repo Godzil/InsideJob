@@ -16,6 +16,7 @@
 
 @interface IJInventoryWindowController : NSWindowController <NSWindowDelegate, IJInventoryViewDelegate> {
 	IJMinecraftLevel *level;
+   IJMinecraftLevel *player; /***< SMP Player.dat file use same format as level.dat */
 	NSArray *inventory;
 	
 	NSSegmentedControl *worldSelectionControl;
@@ -42,8 +43,9 @@
 	
 	// Document
 	int64_t sessionLockValue;
-	int loadedWorldIndex;
-	int attemptedLoadWorldIndex;
+   int loadedWorldIndex;
+	NSString *loadedWorldFolder;
+	NSString *attemptedLoadWorldFolder;
 }
 
 @property (nonatomic, assign) IBOutlet NSSegmentedControl *worldSelectionControl;
@@ -56,6 +58,7 @@
 
 @property (nonatomic, retain) NSNumber *worldTime;
 
+- (IBAction)menuSelectWorldFromPath:(id)sender;
 - (IBAction)menuSelectWorld:(id)sender;
 - (IBAction)worldSelectionChanged:(id)sender;
 - (IBAction)updateItemSearchFilter:(id)sender;

@@ -1,2 +1,5 @@
 /* Localized versions of Info.plist keys */
-
+"No world loaded." = "No world loaded.";
+"No world exists in that slot." = "No world exists in that slot.";
+"Dismiss" = "Dismiss";
+"Please create a new single player world in this slot using Minecraft and try again." = "Please create a new single player world in this slot using Minecraft and try again.";

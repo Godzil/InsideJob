@@ -1,0 +1,5 @@
+/* Localized versions of Info.plist keys */
+"No world loaded." = "Aucun monde chargé.";
+"No world exists in that slot." = "Aucun mode dans ce slot";
+"Dismiss" = "Annuler";
+"Please create a new single player world in this slot using Minecraft and try again." = "Veuillez creer un monde en mode un joueur utilisant ce slot dans Minecraft, et essayez a nouveau.";

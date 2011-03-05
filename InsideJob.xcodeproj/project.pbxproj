@@ -74,6 +74,8 @@
 		66BCFE61125FCEC6005A23F4 /* DataValuesV110Transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DataValuesV110Transparent.png; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* InsideJob-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "InsideJob-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Inside Job.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Inside Job.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D13FDB481322757D00D318D1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D13FDB491322782100D318D1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file; name = fr; path = fr.lproj/MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -272,6 +274,7 @@
 				Japanese,
 				French,
 				German,
+				fr,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* InsideJob */;
 			projectDirPath = "";
@@ -327,6 +330,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				089C165DFE840E0CC02AAC07 /* English */,
+				D13FDB481322757D00D318D1 /* fr */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -335,6 +339,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1DDD58150DA1D0A300B32029 /* English */,
+				D13FDB491322782100D318D1 /* fr */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";

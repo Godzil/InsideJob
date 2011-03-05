@@ -5,6 +5,7 @@
 ![Inside Job Screenshot](http://adampreble.net/images/InsideJob.png)
 
 Inside Job was written in early October 2010 by [Adam Preble](http://adampreble.net).
+Opening SMP world folder added by Godzil [Manoel Trapier](http://www.godzil.net).
 
 Features include:
 
@@ -32,6 +33,14 @@ To alter the quantity or damage of a particular item, click on its inventory slo
 After changing your inventory you will need to save the currently open world using the World menu, or Command-S.  Once you have saved the world you can open it in Minecraft.  Note that if a world is opened in Minecraft while it is open in Inside Job, you will need to re-open it by switching to another world before switching back.  This is because Minecraft's file locking system gives write access to the last program to open it.
 
 ### Release Notes
+
+#### 1.0.2-gdz - March 5, 2011
+
+- Major changes on world internal selection, we no longuer use World Index as ID, but the world path. We currently still have "slots" on the interface, but it should be changed soon to use a popup button with the list of worlds.
+- Now we have separated level.dat form player.dat for beeing SMP friendly.
+- Start to use externalised resources string to be more easy to translate the app.
+- Add missing Redstone repeater
+- Forked from official version
 
 #### 1.0.2 - February 25, 2011
 
