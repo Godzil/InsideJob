@@ -29,8 +29,19 @@
 	//   - compound "Player"
 	//     - list "Inventory"
 	//       *
+   // SMP Player have not the same structure, there is no "DATA" compound, nor "player"
+   NBTContainer *playerCompound;
 	NBTContainer *dataCompound = [self childNamed:@"Data"];
-	NBTContainer *playerCompound = [dataCompound childNamed:@"Player"];
+   if (dataCompound != nil)
+   {
+       playerCompound = [dataCompound childNamed:@"Player"];
+   }
+   else
+   {
+      NSLog(@"Player file is from a SMP file, not level.dat one");
+      playerCompound = self;
+   }
+   
 	NBTContainer *inventoryList = [playerCompound childNamed:@"Inventory"];
 	// TODO: Check for error conditions here.
 	return inventoryList;
@@ -124,6 +135,15 @@
 + (NSString *)pathForSessionLockAtFolder:(NSString *)worldPath
 {
 	return [worldPath stringByAppendingPathComponent:@"session.lock"];
+}
+
++ (NSString *)pathForPlayer:(NSString *)loadedPlayer withWorld:(NSString *)worldPath;
+{
+   /* loadedPlayer == nil, we use level.dat, or else we use the name */
+   if (loadedPlayer == nil)
+      return [self pathForLevelDatAtFolder:worldPath];
+   
+   return [[[worldPath stringByAppendingPathComponent:@"players"] stringByAppendingPathComponent:loadedPlayer] stringByAppendingPathExtension:@".dat"];
 }
 
 + (BOOL)worldExistsAtFolder:(NSString *)worldPath

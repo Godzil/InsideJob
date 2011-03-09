@@ -46,6 +46,7 @@
    int loadedWorldIndex;
 	NSString *loadedWorldFolder;
 	NSString *attemptedLoadWorldFolder;
+   NSString *loadedPlayer;
 }
 
 @property (nonatomic, assign) IBOutlet NSSegmentedControl *worldSelectionControl;
@@ -57,6 +58,7 @@
 @property (nonatomic, assign) IBOutlet NSTableView *itemTableView;
 
 @property (nonatomic, retain) NSNumber *worldTime;
+@property (nonatomic, retain) NSString *playerName;
 
 - (IBAction)menuSelectWorldFromPath:(id)sender;
 - (IBAction)menuSelectWorld:(id)sender;

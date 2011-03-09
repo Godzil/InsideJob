@@ -60,6 +60,7 @@
 	[normalInventory release];
 	[inventory release];
 	[level release];
+   [player release];
 	[super dealloc];
 }
 
@@ -116,6 +117,8 @@
 	[self willChangeValueForKey:@"worldTime"];
 	[level release];
 	level = nil;
+   [player release];
+   player = nil;
 	[inventory release];
 	inventory = nil;
 	[self didChangeValueForKey:@"worldTime"];
@@ -136,12 +139,18 @@
 	[self willChangeValueForKey:@"worldTime"];
 	
    /* Now search for first player .dat file (but by default try to load from level.dat */
-   NSString *playerPath = [IJMinecraftLevel pathForLevelDatAtFolder:worldPath];
+#if 1
+   loadedPlayer = nil;
+   
+   NSString *playerPath = [IJMinecraftLevel pathForPlayer:loadedPlayer withWorld:worldPath];
+#else
+   NSString *playerPath = [worldPath stringByAppendingString:@"/players/Godzil.dat"];
+#endif
    NSData *playerFileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:playerPath]];
-	if (!fileData)
+	if (!playerFileData)
 	{
 		// Error loading 
-		NSBeginCriticalAlertSheet(@"Error loading world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"InsideJob was unable to load the level at %@.", levelPath);
+		NSBeginCriticalAlertSheet(@"Error loading player.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"InsideJob was unable to load the level at %@.", playerPath);
 		return;
 	}
    
@@ -190,7 +199,7 @@
 	
 	[self setDocumentEdited:NO];
 	statusTextField.stringValue = @"";
-	loadedWorldFolder = worldPath;
+	loadedWorldFolder = [worldPath copy];
 }
 
 - (void)loadWorldAtIndex:(int)worldIndex
@@ -204,19 +213,20 @@
 
 - (void)saveWorld
 {
-#if 0
-	int worldIndex = loadedWorldIndex;
+	NSString *worldPath = loadedWorldFolder;
+   
 	if (inventory == nil)
 		return; // no world loaded, nothing to save
 	
-	if (![IJMinecraftLevel checkSessionLockAtIndex:worldIndex value:sessionLockValue])
+	if (![IJMinecraftLevel checkSessionLockAtFolder:worldPath value:sessionLockValue])
 	{
 		NSBeginCriticalAlertSheet(@"Another application has modified this world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"The session lock was changed by another application.");
 		return;
 	}
 	
-	NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtIndex:worldIndex];
-	
+	NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtFolder:worldPath];
+	NSString *playerPath = [IJMinecraftLevel pathForPlayer:loadedPlayer withWorld:worldPath];
+   
 	NSMutableArray *newInventory = [NSMutableArray array];
 	
 	for (NSArray *items in [NSArray arrayWithObjects:armorInventory, quickInventory, normalInventory, nil])
@@ -228,17 +238,29 @@
 		}
 	}
 	
-	[level setInventory:newInventory];
+	[player setInventory:newInventory];
 	
-	NSString *backupPath = [levelPath stringByAppendingPathExtension:@"insidejobbackup"];
+	NSString *backupLevelPath = [levelPath stringByAppendingPathExtension:@"insidejobbackup"];
+   NSString *backupPlayerPath = [playerPath stringByAppendingPathExtension:@"insidejobbackup"];
 	
 	BOOL success = NO;
 	NSError *error = nil;
 	
 	// Remove a previously-created .insidejobbackup, if it exists:
-	if ([[NSFileManager defaultManager] fileExistsAtPath:backupPath])
+	if ([[NSFileManager defaultManager] fileExistsAtPath:backupLevelPath])
 	{
-		success = [[NSFileManager defaultManager] removeItemAtPath:backupPath error:&error];
+		success = [[NSFileManager defaultManager] removeItemAtPath:backupLevelPath error:&error];
+		if (!success)
+		{
+			NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
+			NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to remove the prior backup of this level file:\n%@", [error localizedDescription]);
+			return;
+		}
+	}
+   // Remove a previously-created .insidejobbackup, if it exists:
+	if ([[NSFileManager defaultManager] fileExistsAtPath:backupLevelPath])
+	{
+		success = [[NSFileManager defaultManager] removeItemAtPath:backupPlayerPath error:&error];
 		if (!success)
 		{
 			NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
@@ -248,22 +270,38 @@
 	}
 	
 	// Create the backup:
-	success = [[NSFileManager defaultManager] copyItemAtPath:levelPath toPath:backupPath error:&error];
+	success = [[NSFileManager defaultManager] copyItemAtPath:levelPath toPath:backupLevelPath error:&error];
 	if (!success)
 	{
 		NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
 		NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to create a backup of the existing level file:\n%@", [error localizedDescription]);
 		return;
 	}
-	
+
+   success = [[NSFileManager defaultManager] copyItemAtPath:playerPath toPath:backupPlayerPath error:&error];
+	if (!success)
+	{
+		NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
+		NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to create a backup of the existing level file:\n%@", [error localizedDescription]);
+		return;
+	}
+
 	// Write the new level.dat out:
-	success = [[level writeData] writeToURL:[NSURL fileURLWithPath:levelPath] options:0 error:&error];
+	success = [[player writeData] writeToURL:[NSURL fileURLWithPath:levelPath] options:0 error:&error];
+   
 	if (!success)
 	{
 		NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
 		
 		NSError *restoreError = nil;
-		success = [[NSFileManager defaultManager] copyItemAtPath:backupPath toPath:levelPath error:&restoreError];
+		success = [[NSFileManager defaultManager] copyItemAtPath:backupLevelPath toPath:levelPath error:&restoreError];
+		if (!success)
+		{
+			NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [restoreError localizedDescription]);
+			NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to save to the existing level file, and the backup could not be restored.\n%@\n%@", [error localizedDescription], [restoreError localizedDescription]);
+		}
+		
+      success = [[NSFileManager defaultManager] copyItemAtPath:backupPlayerPath toPath:playerPath error:&restoreError];
 		if (!success)
 		{
 			NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [restoreError localizedDescription]);
@@ -278,7 +316,6 @@
 	
 	[self setDocumentEdited:NO];
 	statusTextField.stringValue = @"Saved.";
-#endif
 }
 
 - (void)setDocumentEdited:(BOOL)edited
@@ -327,7 +364,6 @@
       }
       /* Now try to open the world... */
       [self loadWorldAtFolder:[[panel directoryURL] path]];
-      
    }
 }
 
@@ -363,6 +399,18 @@
 		return inventory != nil;
 		
 	return YES;
+}
+
+- (NSNumber *)worldTime
+{
+	return 	[level worldTimeContainer].numberValue;
+}
+- (void)setWorldTime:(NSNumber *)number
+{
+	[self willChangeValueForKey:@"worldTime"];
+	[level worldTimeContainer].numberValue = number;
+	[self didChangeValueForKey:@"worldTime"];
+	[self setDocumentEdited:YES];
 }
 
 - (NSNumber *)worldTime

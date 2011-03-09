@@ -21,6 +21,7 @@
 
 + (NSString *)pathForLevelDatAtFolder:(NSString *)worldPath;
 + (NSString *)pathForSessionLockAtFolder:(NSString *)worldPath;
++ (NSString *)pathForPlayer:(NSString *)loadedPlayer withWorld:(NSString *)worldPath;
 
 + (BOOL)worldExistsAtFolder:(NSString *)worldPath;
 
