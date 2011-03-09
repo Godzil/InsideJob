@@ -5,7 +5,8 @@
 ![Inside Job Screenshot](http://adampreble.net/images/InsideJob.png)
 
 Inside Job was written in early October 2010 by [Adam Preble](http://adampreble.net).
-Opening SMP world folder added by Godzil [Manoel Trapier](http://www.godzil.net).
+
+Management of SMP world added by [Manoel Trapier](http://www.godzil.net).
 
 Features include:
 
@@ -13,6 +14,9 @@ Features include:
 - Drag and drop inventory editing with item images.
 - Item list searchable by name or item number.
 - Experimental "time of day" editing.
+- Opening world from a folder
+
+The goal of this fork of this application is to add support for SMP World, and by the way add support of new Beta 1.3 named worlds. This will never be the official version of InsideJobs, I have no pretention to add new functionnality other than the support of named world.
 
 ### System Requirements
 
@@ -34,7 +38,7 @@ After changing your inventory you will need to save the currently open world usi
 
 ### Release Notes
 
-#### 1.0.2-gdz - March 5, 2011
+#### 1.0.2-smp - March 5, 2011
 
 - Major changes on world internal selection, we no longuer use World Index as ID, but the world path. We currently still have "slots" on the interface, but it should be changed soon to use a popup button with the list of worlds.
 - Now we have separated level.dat form player.dat for beeing SMP friendly.
@@ -61,9 +65,10 @@ Inside Job uses [Matt Gemmell](http://mattgemmell.com/)'s MAAttachedWindow.  Ite
 
 ### License
 
-Inside Job is made available under the [MIT License](http://www.opensource.org/licenses/mit-license.html).  Its source code can be found on GitHub: [http://github.com/preble/InsideJob]().
+Inside Job is made available under the [MIT License](http://www.opensource.org/licenses/mit-license.html).  Its source code can be found on GitHub: [http://github.com/godzil/InsideJob](). Original work can be found on GitHub: [http://github.com/preble/InsideJob]().
 
-	Copyright (c) 2010 Adam Preble
+    Copyright (c) 2010-2011 Adam Preble
+    Parts Copyright (c) 2011 Manoël Trapier
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
