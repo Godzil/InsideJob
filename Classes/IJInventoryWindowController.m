@@ -199,7 +199,7 @@
 	
 	[self setDocumentEdited:NO];
 	statusTextField.stringValue = @"";
-	loadedWorldFolder = [worldPath copy];
+	loadedWorldFolder = [worldPath retain];
 }
 
 - (void)loadWorldAtIndex:(int)worldIndex
@@ -413,16 +413,13 @@
 	[self setDocumentEdited:YES];
 }
 
-- (NSNumber *)worldTime
+- (NSString *)playerName
 {
-	return 	[level worldTimeContainer].numberValue;
+	return 	[level ].numberValue;
 }
-- (void)setWorldTime:(NSNumber *)number
+- (void)setPlayerName:(NSString *)playerName
 {
-	[self willChangeValueForKey:@"worldTime"];
-	[level worldTimeContainer].numberValue = number;
-	[self didChangeValueForKey:@"worldTime"];
-	[self setDocumentEdited:YES];
+
 }
 
 #pragma mark -

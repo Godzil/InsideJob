@@ -56,6 +56,8 @@
 @property (nonatomic, assign) IBOutlet IJInventoryView *armorView;
 @property (nonatomic, assign) IBOutlet NSSearchField *itemSearchField;
 @property (nonatomic, assign) IBOutlet NSTableView *itemTableView;
+@property (nonatomic, assign) IBOutlet NSTextField *playerNameTextField;
+
 
 @property (nonatomic, retain) NSNumber *worldTime;
 @property (nonatomic, retain) NSString *playerName;
