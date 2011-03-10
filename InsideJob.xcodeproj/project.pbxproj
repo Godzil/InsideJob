@@ -30,6 +30,7 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		BA24598B1297428900F8B9C2 /* blockNotFound.png in Resources */ = {isa = PBXBuildFile; fileRef = BA24598A1297428900F8B9C2 /* blockNotFound.png */; };
 		BA3329A9129889860079447B /* NSFileManager+DirectoryLocations.m in Sources */ = {isa = PBXBuildFile; fileRef = BA3329A8129889860079447B /* NSFileManager+DirectoryLocations.m */; };
+		BA9186CB1328C1C600769DEC /* IJTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BA9186CA1328C1C600769DEC /* IJTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -73,6 +74,8 @@
 		BA24598A1297428900F8B9C2 /* blockNotFound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blockNotFound.png; sourceTree = "<group>"; };
 		BA3329A7129889860079447B /* NSFileManager+DirectoryLocations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+DirectoryLocations.h"; sourceTree = "<group>"; };
 		BA3329A8129889860079447B /* NSFileManager+DirectoryLocations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+DirectoryLocations.m"; sourceTree = "<group>"; };
+		BA9186C91328C1C600769DEC /* IJTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJTableView.h; sourceTree = "<group>"; };
+		BA9186CA1328C1C600769DEC /* IJTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IJTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -216,6 +219,8 @@
 		66BC033E1260CC68005A23F4 /* Views & Windows */ = {
 			isa = PBXGroup;
 			children = (
+				BA9186C91328C1C600769DEC /* IJTableView.h */,
+				BA9186CA1328C1C600769DEC /* IJTableView.m */,
 				66BC03391260CC59005A23F4 /* MAAttachedWindow.h */,
 				66BC033A1260CC59005A23F4 /* MAAttachedWindow.m */,
 			);
@@ -315,6 +320,7 @@
 				66BC03621260D095005A23F4 /* IJItemPropertiesViewController.m in Sources */,
 				66BC04F812619072005A23F4 /* NSColor+Additions.m in Sources */,
 				BA3329A9129889860079447B /* NSFileManager+DirectoryLocations.m in Sources */,
+				BA9186CB1328C1C600769DEC /* IJTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

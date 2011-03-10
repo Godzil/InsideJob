@@ -41,7 +41,6 @@
 	id observerObject;
 	
 	// Document
-	BOOL dirty;
 	int64_t sessionLockValue;
 	int loadedWorldIndex;
 	int attemptedLoadWorldIndex;
@@ -61,6 +60,7 @@
 - (IBAction)worldSelectionChanged:(id)sender;
 - (IBAction)updateItemSearchFilter:(id)sender;
 - (IBAction)makeSearchFieldFirstResponder:(id)sender;
+- (IBAction)itemTableViewDoubleClicked:(id)sender;
 
 - (IBAction)setNextDay:(id)sender;
 - (IBAction)setNextNight:(id)sender;
