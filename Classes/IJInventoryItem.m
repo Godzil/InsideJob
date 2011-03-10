@@ -72,8 +72,11 @@
 		if (itemId <= 17){
 			index = itemId - 1; // first item is 1
 		}
-		else if (itemId <= 35 ){
+		else if (itemId <= 34 ){
 			index = itemId + 1;
+		}
+		else if (itemId == 35 ){
+			index = itemId - 8;
 		}
 		else if (itemId >= 37){
 			index = itemId + 6;
