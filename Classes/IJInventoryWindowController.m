@@ -12,12 +12,14 @@
 #import "IJInventoryView.h"
 #import "IJItemPropertiesViewController.h"
 #import "MAAttachedWindow.h"
+#import "NSFileManager+DirectoryLocations.h"
 
 @interface IJInventoryWindowController ()
 - (void)saveWorld;
 - (void)loadWorldAtIndex:(int)worldIndex;
-- (void)loadWorldAtFolder:(NSString *)worldFolder;
 - (BOOL)isDocumentEdited;
+- (void)loadWorldAtFolder:(NSString *)worldFolder;
+- (void)loadWorldSelectionControl;
 @end
 
 @implementation IJInventoryWindowController
@@ -30,6 +32,8 @@
 
 - (void)awakeFromNib
 {
+    [self loadWorldSelectionControl];
+    
 	armorInventory = [[NSMutableArray alloc] init];
 	quickInventory = [[NSMutableArray alloc] init];
 	normalInventory = [[NSMutableArray alloc] init];
@@ -47,7 +51,6 @@
 	keys = [keys sortedArrayUsingSelector:@selector(compare:)];
 	allItemIds = [[NSArray alloc] initWithArray:keys];
 	filteredItemIds = [allItemIds retain];
-	
 	[itemTableView setTarget:self];
 	[itemTableView setDoubleAction:@selector(itemTableViewDoubleClicked:)];
 }
@@ -72,7 +75,7 @@
 {
 	if (returnCode == NSAlertOtherReturn) // Cancel
 	{
-		[worldSelectionControl setSelectedSegment:loadedWorldIndex-1];
+		[worldSelectionControl selectItemWithTitle:[loadedWorldFolder lastPathComponent]];
 		return;
 	}
 	
@@ -124,11 +127,26 @@
 	[self didChangeValueForKey:@"worldTime"];
 	
 	statusTextField.stringValue = @"No world loaded.";
-		
-	NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtFolder:worldPath];
-   
-	NSData *fileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:levelPath]];
+   NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtFolder:worldPath];
+   NSData *fileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:levelPath]];
+
+	sessionLockValue = [IJMinecraftLevel writeToSessionLockAtFolder:worldPath];
+	if (![IJMinecraftLevel checkSessionLockAtFolder:worldPath value:sessionLockValue])
+	{
+		NSBeginCriticalAlertSheet(@"Error loading world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable obtain the session lock.");
+		return;
+	}
+    
+	if (!fileData)
+	{
+		// Error loading 
+		NSBeginCriticalAlertSheet(@"Error loading world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"InsideJob was unable to load the level at %@.", levelPath);
+		return;
+	}
 	
+	[self willChangeValueForKey:@"worldTime"];
+	
+	/* Now search for first player .dat file (but by default try to load from level.dat */
 	if (!fileData)
 	{
 		// Error loading 
@@ -141,7 +159,6 @@
    /* Now search for first player .dat file (but by default try to load from level.dat */
 #if 1
    loadedPlayer = nil;
-   
    NSString *playerPath = [IJMinecraftLevel pathForPlayer:loadedPlayer withWorld:worldPath];
 #else
    NSString *playerPath = [worldPath stringByAppendingString:@"/players/Godzil.dat"];
@@ -200,6 +217,10 @@
 	[self setDocumentEdited:NO];
 	statusTextField.stringValue = @"";
 	loadedWorldFolder = [worldPath retain];
+    
+    NSLog(@"%@",loadedWorldFolder);
+    NSLog(@"%@",worldPath);
+    
 }
 
 - (void)loadWorldAtIndex:(int)worldIndex
@@ -214,7 +235,7 @@
 - (void)saveWorld
 {
 	NSString *worldPath = loadedWorldFolder;
-   
+
 	if (inventory == nil)
 		return; // no world loaded, nothing to save
 	
@@ -337,40 +358,88 @@
 {
 	int worldIndex = [sender tag];
 	[self loadWorldAtIndex:worldIndex];
-	[worldSelectionControl setSelectedSegment:worldIndex - 1];
+	[worldSelectionControl selectItemWithTitle:[loadedWorldFolder lastPathComponent]];
 }
 
 - (IBAction)menuSelectWorldFromPath:(id)sender
 {
-   NSInteger openResult;
-   /* Ask user for world folder path */
-   NSOpenPanel *panel = [NSOpenPanel openPanel];   
-   NSString *worldPath;
-   
-   /* Only allow to choose a folder */
-   [panel setCanChooseDirectories:YES];
-   [panel setCanChooseFiles:NO];
-   openResult = [panel runModal];
-   
-   if (openResult == NSOKButton)
-   {
-      worldPath = [[panel directoryURL] path];
+    NSInteger openResult;
+    /* Ask user for world folder path */
+    NSOpenPanel *panel = [NSOpenPanel openPanel];   
+    NSString *worldPath;
     
-      /* Verify for level.dat */
-      if (![IJMinecraftLevel worldExistsAtFolder: worldPath])
-      {
-         NSBeginCriticalAlertSheet(@"No world exists in that slot.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Please create a new single player world in this slot using Minecraft and try again.");
-         return;
-      }
-      /* Now try to open the world... */
-      [self loadWorldAtFolder:[[panel directoryURL] path]];
-   }
+    /* Only allow to choose a folder */
+    [panel setCanChooseDirectories:YES];
+    [panel setCanChooseFiles:NO];
+    openResult = [panel runModal];
+    
+    if (openResult == NSOKButton)
+    {
+        worldPath = [[panel directoryURL] path];
+        
+        /* Verify for level.dat */
+        if (![IJMinecraftLevel worldExistsAtFolder: worldPath])
+        {
+            NSBeginCriticalAlertSheet(@"No world exists in that slot.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Please create a new single player world in this slot using Minecraft and try again.");
+            return;
+        }
+        /* Now try to open the world... */
+        [self loadWorldAtFolder:[[panel directoryURL] path]];
+        [worldSelectionControl addItemWithTitle:[loadedWorldFolder lastPathComponent]];
+        [worldSelectionControl selectItemWithTitle:[loadedWorldFolder lastPathComponent]];
+        
+    }
 }
 
 - (IBAction)worldSelectionChanged:(id)sender
 {
-	int worldIndex = [worldSelectionControl selectedSegment] + 1;
-	[self loadWorldAtIndex:worldIndex];
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString *path = [paths objectAtIndex:0];
+	path = [path stringByAppendingPathComponent:@"minecraft"];
+	path = [path stringByAppendingPathComponent:@"saves"];
+    
+    
+    NSString* worldName = [worldSelectionControl titleOfSelectedItem];
+	NSString* worldPath = [path stringByAppendingPathComponent:worldName];
+    
+    NSLog(@"loadedWorldFolder: %@",loadedWorldFolder);
+    NSLog(@"worldName: %@",worldName);
+    NSLog(@"worldPath: %@",worldPath);
+
+    [self loadWorldAtFolder:worldPath];
+}
+
+- (void)loadWorldSelectionControl
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString *path = [paths objectAtIndex:0];
+	path = [path stringByAppendingPathComponent:@"minecraft"];
+	path = [path stringByAppendingPathComponent:@"saves"];
+    
+    
+    NSFileManager *filemgr;
+    NSArray *filelist;
+    NSError *fileError;
+    int count;
+    int i;
+    
+    filemgr = [NSFileManager defaultManager];
+    
+    filelist = [filemgr contentsOfDirectoryAtPath:path error:&fileError];
+    
+    count = [filelist count];
+    
+    
+    [worldSelectionControl removeAllItems];
+    for (i = 0; i < count; i++)
+    {
+        NSLog (@"%@", [filelist objectAtIndex: i]);
+        if([IJMinecraftLevel worldExistsAtFolder:[path stringByAppendingPathComponent:[filelist objectAtIndex: i]]])
+            [worldSelectionControl addItemWithTitle:[filelist objectAtIndex: i]];
+    }
+    
+    [filemgr release];
+    
 }
 
 - (void)saveDocument:(id)sender
@@ -401,10 +470,12 @@
 	return YES;
 }
 
+
 - (NSNumber *)worldTime
 {
 	return 	[level worldTimeContainer].numberValue;
 }
+
 - (void)setWorldTime:(NSNumber *)number
 {
 	[self willChangeValueForKey:@"worldTime"];
@@ -415,12 +486,142 @@
 
 - (NSString *)playerName
 {
-	return 	[level ].numberValue;
+	return @"Godzil";
 }
 - (void)setPlayerName:(NSString *)playerName
 {
-
 }
+
+- (void)calcTimePoints:(int)number
+{
+	int result;
+	int wTime = [[self worldTime] intValue];
+	result =wTime +(number - (wTime % number));
+	
+	NSNumber *newTime = [NSNumber numberWithInt:result];
+	[self setWorldTime:newTime];
+}
+
+- (IBAction)setNextDay:(id)sender
+{
+	int number = 24000;
+	[self calcTimePoints:number];
+}
+
+- (IBAction)setNextNight:(id)sender
+{
+	int number = 12000;
+	[self calcTimePoints:number];
+}
+
+- (IBAction)setNextMidnight:(id)sender
+{
+	int number = 18000;
+	[self calcTimePoints:number];
+}
+
+- (IBAction)setNextNoon:(id)sender
+{
+	int number = 6000;
+	[self calcTimePoints:number];
+}
+
+- (void)clearInventory{
+	
+	[armorInventory removeAllObjects];
+	[quickInventory removeAllObjects];
+	[normalInventory removeAllObjects];
+	
+	[inventoryView setItems:normalInventory];
+	[quickView setItems:quickInventory];
+	[armorView setItems:armorInventory];
+	
+	[self setDocumentEdited:YES];
+}
+
+- (void)saveInventory
+{
+	
+	NSString *path = [[NSFileManager defaultManager] applicationSupportDirectory];
+	NSLog(@"%@",path);
+	NSString *file = @"Inventory.plist";
+	
+	
+	NSString *InventoryPath = [path stringByAppendingPathComponent:file];
+	
+	NSLog(@"%@",InventoryPath);
+
+	
+	NSMutableArray *newInventory = [NSMutableArray array];
+	
+	for (NSArray *items in [NSArray arrayWithObjects:armorInventory, quickInventory, normalInventory, nil])
+	{
+		for (IJInventoryItem *item in items)
+		{
+			if (item.count > 0 && item.itemId > 0)
+				[newInventory addObject:item];
+		}
+	}
+	
+	[NSKeyedArchiver archiveRootObject: newInventory toFile:InventoryPath];
+}
+
+-(void)loadInventory
+{
+	NSString *path = [[NSFileManager defaultManager] applicationSupportDirectory];
+	NSString *file = @"Inventory.plist";
+	NSString *InventoryPath = [path stringByAppendingPathComponent:file];
+	
+	
+	[self clearInventory];
+	NSArray *newInventory = [NSKeyedUnarchiver unarchiveObjectWithFile:InventoryPath];
+	
+	for (int i = 0; i < IJInventorySlotQuickLast + 1 - IJInventorySlotQuickFirst; i++)
+		[quickInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotQuickFirst + i]];
+	
+	for (int i = 0; i < IJInventorySlotNormalLast + 1 - IJInventorySlotNormalFirst; i++)
+		[normalInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotNormalFirst + i]];
+	
+	for (int i = 0; i < IJInventorySlotArmorLast + 1 - IJInventorySlotArmorFirst; i++)
+		[armorInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotArmorFirst + i]];
+	
+	for (IJInventoryItem *item in newInventory)
+	{
+		if (IJInventorySlotQuickFirst <= item.slot && item.slot <= IJInventorySlotQuickLast)
+		{
+			[quickInventory replaceObjectAtIndex:item.slot - IJInventorySlotQuickFirst withObject:item];
+		}
+		else if (IJInventorySlotNormalFirst <= item.slot && item.slot <= IJInventorySlotNormalLast)
+		{
+			[normalInventory replaceObjectAtIndex:item.slot - IJInventorySlotNormalFirst withObject:item];
+		}
+		else if (IJInventorySlotArmorFirst <= item.slot && item.slot <= IJInventorySlotArmorLast)
+		{
+			[armorInventory replaceObjectAtIndex:item.slot - IJInventorySlotArmorFirst withObject:item];
+		}
+	}
+	
+	[inventoryView setItems:normalInventory];
+	[quickView setItems:quickInventory];
+	[armorView setItems:armorInventory];
+	
+}
+
+- (IBAction)emptyInventory:(id)sender
+{
+	[self clearInventory];
+}
+
+- (IBAction)saveInventoryItems:(id)sender
+{
+	[self saveInventory];
+}
+
+- (IBAction)loadInventoryItems:(id)sender
+{
+	[self loadInventory];
+}
+
 
 #pragma mark -
 #pragma mark IJInventoryViewDelegate
@@ -534,6 +735,14 @@
 																	   [propertiesWindow setAlphaValue:0.0];
 																   }];
 	propertiesViewController.item = item;
+	
+	if (propertiesViewController.item.damage == -1000){
+		[propertiesViewController setState:YES];
+	}else {
+		[propertiesViewController setState:NO];
+	}
+
+	
 	[propertiesWindow setPoint:point side:MAPositionRight];
 	[propertiesWindow makeKeyAndOrderFront:nil];
 	[propertiesWindow setAlphaValue:1.0];
@@ -649,12 +858,12 @@
 	NSMutableArray *inventoryArray = [self inventoryArrayWithEmptySlot:&slot];
 	if (!inventoryArray)
 		return;
-	
+
 	IJInventoryItem *item = [inventoryArray objectAtIndex:slot];
 	item.itemId = [[filteredItemIds objectAtIndex:[itemTableView selectedRow]] shortValue];
 	item.count = 1;
 	[self setDocumentEdited:YES];
-	
+
 	IJInventoryView *invView = [self inventoryViewForItemArray:inventoryArray];
 	[invView reloadItemAtIndex:slot];
 	[self inventoryView:invView selectedItemAtIndex:slot];
@@ -714,6 +923,5 @@
 	}
 	return YES;
 }
-
 
 @end

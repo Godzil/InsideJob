@@ -12,9 +12,11 @@
 
 @interface IJItemPropertiesViewController : NSViewController {
 	IJInventoryItem *item;
+	IBOutlet NSButton *checkIndestructible;
 }
 @property (nonatomic, retain) IJInventoryItem *item;
 
+- (void)setState:(bool)enabel;
 - (IBAction)closeButton:(id)sender;
-
+- (IBAction)makeIndestructible:(id)sender;
 @end

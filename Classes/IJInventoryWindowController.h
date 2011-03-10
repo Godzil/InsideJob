@@ -19,7 +19,7 @@
    IJMinecraftLevel *player; /***< SMP Player.dat file use same format as level.dat */
 	NSArray *inventory;
 	
-	NSSegmentedControl *worldSelectionControl;
+	NSPopUpButton *worldSelectionControl;
 	NSTextField *statusTextField;
 	
 	IJInventoryView *inventoryView;
@@ -49,15 +49,13 @@
    NSString *loadedPlayer;
 }
 
-@property (nonatomic, assign) IBOutlet NSSegmentedControl *worldSelectionControl;
+@property (nonatomic, assign) IBOutlet NSPopUpButton *worldSelectionControl;
 @property (nonatomic, assign) IBOutlet NSTextField *statusTextField;
 @property (nonatomic, assign) IBOutlet IJInventoryView *inventoryView;
 @property (nonatomic, assign) IBOutlet IJInventoryView *quickView;
 @property (nonatomic, assign) IBOutlet IJInventoryView *armorView;
 @property (nonatomic, assign) IBOutlet NSSearchField *itemSearchField;
 @property (nonatomic, assign) IBOutlet NSTableView *itemTableView;
-@property (nonatomic, assign) IBOutlet NSTextField *playerNameTextField;
-
 
 @property (nonatomic, retain) NSNumber *worldTime;
 @property (nonatomic, retain) NSString *playerName;
@@ -68,5 +66,14 @@
 - (IBAction)updateItemSearchFilter:(id)sender;
 - (IBAction)makeSearchFieldFirstResponder:(id)sender;
 - (IBAction)itemTableViewDoubleClicked:(id)sender;
+
+- (IBAction)setNextDay:(id)sender;
+- (IBAction)setNextNight:(id)sender;
+- (IBAction)setNextNoon:(id)sender;
+- (IBAction)setNextMidnight:(id)sender;
+
+- (IBAction)emptyInventory:(id)sender;
+- (IBAction)saveInventoryItems:(id)sender;
+- (IBAction)loadInventoryItems:(id)sender;
 
 @end

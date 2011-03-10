@@ -53,7 +53,7 @@
 	for (NSArray *listItems in [self inventoryList].children)
 	{
 		IJInventoryItem *invItem = [[IJInventoryItem alloc] init];
-		
+        
 		invItem.itemId = [[self containerWithName:@"id" inArray:listItems].numberValue shortValue];
 		invItem.count = [[self containerWithName:@"Count" inArray:listItems].numberValue unsignedCharValue];
 		invItem.damage = [[self containerWithName:@"Damage" inArray:listItems].numberValue shortValue];
@@ -68,7 +68,7 @@
 {
 	NSMutableArray *newChildren = [NSMutableArray array];
 	NBTContainer *inventoryList = [self inventoryList];
-	
+    
 	if (inventoryList.listType != NBTTypeCompound)
 	{
 		// There appears to be a bug in the way Minecraft writes empty inventory lists; it appears to
@@ -76,7 +76,7 @@
 		NSLog(@"%s Fixing inventory list type; was %d.", __PRETTY_FUNCTION__, inventoryList.listType);
 		inventoryList.listType = NBTTypeCompound;
 	}
-	
+    
 	for (IJInventoryItem *invItem in newInventory)
 	{
 		NSArray *listItems = [NSArray arrayWithObjects:
@@ -158,10 +158,10 @@
 	NSTimeInterval interval = [now timeIntervalSince1970];
 	int64_t milliseconds = (int64_t)(interval * 1000.0);
 	// write as number of milliseconds
-	
+    
 	NSData *data = [IJMinecraftLevel dataWithInt64:milliseconds];
 	[data writeToFile:path atomically:YES];
-	
+    
 	return milliseconds;
 }
 
@@ -169,13 +169,13 @@
 {
 	NSString *path = [IJMinecraftLevel pathForSessionLockAtFolder:worldPath];
 	NSData *data = [NSData dataWithContentsOfFile:path];
-   
+
 	if (!data)
 	{
 		NSLog(@"Failed to read session lock at %@", path);
 		return NO;
 	}
-	
+    
 	int64_t milliseconds = [IJMinecraftLevel int64FromData:data];
 	return checkValue == milliseconds;
 }

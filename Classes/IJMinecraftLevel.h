@@ -11,19 +11,17 @@
 #import "NBTContainer.h"
 
 @interface IJMinecraftLevel : NBTContainer {
-
+    
 }
 
 @property (nonatomic, copy) NSArray *inventory; // Array of IJInventoryItem objects.
 @property (nonatomic, readonly) NBTContainer *worldTimeContainer;
 
 + (NSString *)pathForWorldAtIndex:(int)worldIndex;
-
++ (BOOL)worldExistsAtFolder:(NSString *)worldPath;
 + (NSString *)pathForLevelDatAtFolder:(NSString *)worldPath;
 + (NSString *)pathForSessionLockAtFolder:(NSString *)worldPath;
 + (NSString *)pathForPlayer:(NSString *)loadedPlayer withWorld:(NSString *)worldPath;
-
-+ (BOOL)worldExistsAtFolder:(NSString *)worldPath;
 
 + (int64_t)writeToSessionLockAtFolder:(NSString *)worldPath;
 + (BOOL)checkSessionLockAtFolder:(NSString *)worldPath value:(int64_t)checkValue;

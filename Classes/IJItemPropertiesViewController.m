@@ -20,4 +20,17 @@
 	self.item = nil; // Hack to prevent this item as coming up as 'lastItem' if they click again.
 }
 
+- (IBAction)makeIndestructible:(id)sender
+{
+	if ([checkIndestructible state] == NSOnState) {
+		self.item.damage = -1000;
+		
+	}else {
+		self.item.damage = 0;
+	}
+}
+
+- (void)setState:(bool)enabel{
+	[checkIndestructible setState:enabel];
+}
 @end

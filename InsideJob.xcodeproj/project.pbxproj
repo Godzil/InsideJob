@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* InsideJobAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* InsideJobAppDelegate.m */; };
-		663803B2131769E90015CFAD /* blockNotFound.png in Resources */ = {isa = PBXBuildFile; fileRef = 663803B1131769E90015CFAD /* blockNotFound.png */; };
 		668B2556125D5A3E0060BF71 /* NBTContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 668B2555125D5A3E0060BF71 /* NBTContainer.m */; };
 		668B255C125D5BCA0060BF71 /* NSData+CocoaDevAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 668B255B125D5BCA0060BF71 /* NSData+CocoaDevAdditions.m */; };
 		668B2560125D5C1C0060BF71 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 668B255F125D5C1C0060BF71 /* libz.dylib */; };
@@ -17,7 +16,6 @@
 		668B27B2125D8F8E0060BF71 /* IJInventoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 668B27B1125D8F8E0060BF71 /* IJInventoryItem.m */; };
 		668B27F2125D963F0060BF71 /* IJInventoryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 668B27F1125D963F0060BF71 /* IJInventoryWindowController.m */; };
 		668B290F125E40560060BF71 /* Items.csv in Resources */ = {isa = PBXBuildFile; fileRef = 668B28D8125E370A0060BF71 /* Items.csv */; };
-		6697AD7212B86762001890C6 /* IJTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6697AD7112B86762001890C6 /* IJTableView.m */; };
 		66BC00031260215C005A23F4 /* IJInventoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BC00021260215C005A23F4 /* IJInventoryView.m */; };
 		66BC000E12602359005A23F4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66BC000D12602359005A23F4 /* QuartzCore.framework */; };
 		66BC033B1260CC59005A23F4 /* MAAttachedWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 66BC033A1260CC59005A23F4 /* MAAttachedWindow.m */; };
@@ -30,6 +28,9 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		BA24598B1297428900F8B9C2 /* blockNotFound.png in Resources */ = {isa = PBXBuildFile; fileRef = BA24598A1297428900F8B9C2 /* blockNotFound.png */; };
+		BA3329A9129889860079447B /* NSFileManager+DirectoryLocations.m in Sources */ = {isa = PBXBuildFile; fileRef = BA3329A8129889860079447B /* NSFileManager+DirectoryLocations.m */; };
+		BA9186CB1328C1C600769DEC /* IJTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = BA9186CA1328C1C600769DEC /* IJTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,7 +44,6 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		663803B1131769E90015CFAD /* blockNotFound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blockNotFound.png; sourceTree = "<group>"; };
 		668B2554125D5A3E0060BF71 /* NBTContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NBTContainer.h; sourceTree = "<group>"; };
 		668B2555125D5A3E0060BF71 /* NBTContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NBTContainer.m; sourceTree = "<group>"; };
 		668B255A125D5BCA0060BF71 /* NSData+CocoaDevAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+CocoaDevAdditions.h"; sourceTree = "<group>"; };
@@ -74,8 +74,12 @@
 		66BCFE61125FCEC6005A23F4 /* DataValuesV110Transparent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DataValuesV110Transparent.png; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* InsideJob-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "InsideJob-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Inside Job.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Inside Job.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D13FDB481322757D00D318D1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		D13FDB491322782100D318D1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = file; name = fr; path = fr.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		BA24598A1297428900F8B9C2 /* blockNotFound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blockNotFound.png; sourceTree = "<group>"; };
+		BA3329A7129889860079447B /* NSFileManager+DirectoryLocations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+DirectoryLocations.h"; sourceTree = "<group>"; };
+		BA3329A8129889860079447B /* NSFileManager+DirectoryLocations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+DirectoryLocations.m"; sourceTree = "<group>"; };
+		BA9186C91328C1C600769DEC /* IJTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IJTableView.h; sourceTree = "<group>"; };
+		BA9186CA1328C1C600769DEC /* IJTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IJTableView.m; sourceTree = "<group>"; };
+		D13FDB481322757D00D318D1 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +202,8 @@
 				668B255B125D5BCA0060BF71 /* NSData+CocoaDevAdditions.m */,
 				66BC04F612619072005A23F4 /* NSColor+Additions.h */,
 				66BC04F712619072005A23F4 /* NSColor+Additions.m */,
+				BA3329A7129889860079447B /* NSFileManager+DirectoryLocations.h */,
+				BA3329A8129889860079447B /* NSFileManager+DirectoryLocations.m */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -218,6 +224,8 @@
 		66BC033E1260CC68005A23F4 /* Views & Windows */ = {
 			isa = PBXGroup;
 			children = (
+				BA9186C91328C1C600769DEC /* IJTableView.h */,
+				BA9186CA1328C1C600769DEC /* IJTableView.m */,
 				66BC03391260CC59005A23F4 /* MAAttachedWindow.h */,
 				66BC033A1260CC59005A23F4 /* MAAttachedWindow.m */,
 				6697AD7012B86762001890C6 /* IJTableView.h */,
@@ -229,7 +237,7 @@
 		66BC07711262823E005A23F4 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				663803B1131769E90015CFAD /* blockNotFound.png */,
+				BA24598A1297428900F8B9C2 /* blockNotFound.png */,
 				66BCFE61125FCEC6005A23F4 /* DataValuesV110Transparent.png */,
 				66BCFC35125EA53E005A23F4 /* InsideJob.icns */,
 			);
@@ -297,7 +305,7 @@
 				66BCFC36125EA53E005A23F4 /* InsideJob.icns in Resources */,
 				66BCFE62125FCEC6005A23F4 /* DataValuesV110Transparent.png in Resources */,
 				66BC077312628257005A23F4 /* ItemPropertiesView.xib in Resources */,
-				663803B2131769E90015CFAD /* blockNotFound.png in Resources */,
+				BA24598B1297428900F8B9C2 /* blockNotFound.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,7 +327,8 @@
 				66BC033B1260CC59005A23F4 /* MAAttachedWindow.m in Sources */,
 				66BC03621260D095005A23F4 /* IJItemPropertiesViewController.m in Sources */,
 				66BC04F812619072005A23F4 /* NSColor+Additions.m in Sources */,
-				6697AD7212B86762001890C6 /* IJTableView.m in Sources */,
+				BA3329A9129889860079447B /* NSFileManager+DirectoryLocations.m in Sources */,
+				BA9186CB1328C1C600769DEC /* IJTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,7 +348,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				1DDD58150DA1D0A300B32029 /* English */,
-				D13FDB491322782100D318D1 /* fr */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
