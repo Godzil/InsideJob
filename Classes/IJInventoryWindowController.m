@@ -18,6 +18,8 @@
 - (void)saveWorld;
 - (void)loadWorldAtIndex:(int)worldIndex;
 - (BOOL)isDocumentEdited;
+- (void)loadWorldAtFolder:(NSString *)worldFolder;
+- (void)loadWorldSelectionControl;
 @end
 
 @implementation IJInventoryWindowController
@@ -30,6 +32,8 @@
 
 - (void)awakeFromNib
 {
+    [self loadWorldSelectionControl];
+    
 	armorInventory = [[NSMutableArray alloc] init];
 	quickInventory = [[NSMutableArray alloc] init];
 	normalInventory = [[NSMutableArray alloc] init];
@@ -50,7 +54,6 @@
     
     [itemTableView setTarget:self];
     [itemTableView setDoubleAction:@selector(itemTableViewDoubleClicked:)];
-    
 }
 
 - (void)dealloc
@@ -72,27 +75,27 @@
 {
 	if (returnCode == NSAlertOtherReturn) // Cancel
 	{
-		[worldSelectionControl setSelectedSegment:loadedWorldIndex-1];
+		[worldSelectionControl selectItemWithTitle:[loadedWorldFolder lastPathComponent]];
 		return;
 	}
 	
 	if (returnCode == NSAlertDefaultReturn) // Save
 	{
 		[self saveWorld];
-		[self loadWorldAtIndex:attemptedLoadWorldIndex];
+        [self loadWorldAtFolder:attemptedLoadWorldFolder];
 	}
 	else if (returnCode == NSAlertAlternateReturn) // Don't save
 	{
 		[self setDocumentEdited:NO];// Slightly hacky -- prevent the alert from being put up again.
-		[self loadWorldAtIndex:attemptedLoadWorldIndex];
+		[self loadWorldAtFolder:attemptedLoadWorldFolder];
 	}
 }
 
-- (void)loadWorldAtIndex:(int)worldIndex
+- (void)loadWorldAtFolder:(NSString *)worldPath
 {
 	if ([self isDocumentEdited])
 	{
-		attemptedLoadWorldIndex = worldIndex;
+		attemptedLoadWorldFolder = worldPath;
 		NSBeginInformationalAlertSheet(@"Do you want to save the changes you made in this world?", @"Save", @"Don't Save", @"Cancel", self.window, self, @selector(dirtyLoadSheetDidEnd:returnCode:contextInfo:), nil, nil, @"Your changes will be lost if you do not save them.");
 		return;
 	}
@@ -113,24 +116,19 @@
 	[self didChangeValueForKey:@"worldTime"];
 	
 	statusTextField.stringValue = @"No world loaded.";
+    
+    NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtFolder:worldPath];
+    NSData *fileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:levelPath]];
+    
+
 	
-	if (![IJMinecraftLevel worldExistsAtIndex:worldIndex])
-	{
-		NSBeginCriticalAlertSheet(@"No world exists in that slot.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Please create a new single player world in this slot using Minecraft and try again.");
-		return;
-	}
-	
-	sessionLockValue = [IJMinecraftLevel writeToSessionLockAtIndex:worldIndex];
-	if (![IJMinecraftLevel checkSessionLockAtIndex:worldIndex value:sessionLockValue])
+	sessionLockValue = [IJMinecraftLevel writeToSessionLockAtFolder:worldPath];
+	if (![IJMinecraftLevel checkSessionLockAtFolder:worldPath value:sessionLockValue])
 	{
 		NSBeginCriticalAlertSheet(@"Error loading world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable obtain the session lock.");
 		return;
 	}
-	
-	NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtIndex:worldIndex];
-	
-	NSData *fileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:levelPath]];
-	
+    
 	if (!fileData)
 	{
 		// Error loading 
@@ -140,9 +138,21 @@
 	
 	[self willChangeValueForKey:@"worldTime"];
 	
-	level = [[IJMinecraftLevel nbtContainerWithData:fileData] retain];
-	inventory = [[level inventory] retain];
-	
+	/* Now search for first player .dat file (but by default try to load from level.dat */
+    
+    NSString *playerPath = [IJMinecraftLevel pathForLevelDatAtFolder:worldPath];
+    NSData *playerFileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:playerPath]];
+	if (!fileData)
+	{
+		// Error loading 
+		NSBeginCriticalAlertSheet(@"Error loading world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"InsideJob was unable to load the level at %@.", levelPath);
+		return;
+	}
+    
+	level  = [[IJMinecraftLevel nbtContainerWithData:fileData] retain];
+    player = [[IJMinecraftLevel nbtContainerWithData:playerFileData] retain];
+	inventory = [[player inventory] retain];
+    
 	[self didChangeValueForKey:@"worldTime"];
 	
 	// Add placeholder inventory items:
@@ -184,22 +194,39 @@
 	
 	[self setDocumentEdited:NO];
 	statusTextField.stringValue = @"";
-	loadedWorldIndex = worldIndex;
+	
+    
+    loadedWorldFolder = [worldPath retain];
+    
+    NSLog(@"%@",loadedWorldFolder);
+    NSLog(@"%@",worldPath);
+    
+    
 }
+
+- (void)loadWorldAtIndex:(int)worldIndex
+{
+    NSString *worldPath;
+    worldPath = [IJMinecraftLevel pathForWorldAtIndex:worldIndex];
+    
+    [self loadWorldAtFolder: worldPath];
+}
+
 
 - (void)saveWorld
 {
-	int worldIndex = loadedWorldIndex;
+	NSString *worldPath = loadedWorldFolder;
+    
 	if (inventory == nil)
 		return; // no world loaded, nothing to save
 	
-	if (![IJMinecraftLevel checkSessionLockAtIndex:worldIndex value:sessionLockValue])
+	if (![IJMinecraftLevel checkSessionLockAtFolder:worldPath value:sessionLockValue])
 	{
 		NSBeginCriticalAlertSheet(@"Another application has modified this world.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"The session lock was changed by another application.");
 		return;
 	}
 	
-	NSString *levelPath = [IJMinecraftLevel pathForLevelDatAtIndex:worldIndex];
+	NSString *levelPath = [worldPath stringByAppendingPathComponent:@"level.dat"]; 
 	
 	NSMutableArray *newInventory = [NSMutableArray array];
 	
@@ -284,13 +311,90 @@
 {
 	int worldIndex = [sender tag];
 	[self loadWorldAtIndex:worldIndex];
-	[worldSelectionControl setSelectedSegment:worldIndex - 1];
+	[worldSelectionControl selectItemWithTitle:[loadedWorldFolder lastPathComponent]];
+}
+
+- (IBAction)menuSelectWorldFromPath:(id)sender
+{
+    NSInteger openResult;
+    /* Ask user for world folder path */
+    NSOpenPanel *panel = [NSOpenPanel openPanel];   
+    NSString *worldPath;
+    
+    /* Only allow to choose a folder */
+    [panel setCanChooseDirectories:YES];
+    [panel setCanChooseFiles:NO];
+    openResult = [panel runModal];
+    
+    if (openResult == NSOKButton)
+    {
+        worldPath = [[panel directoryURL] path];
+        
+        /* Verify for level.dat */
+        if (![IJMinecraftLevel worldExistsAtFolder: worldPath])
+        {
+            NSBeginCriticalAlertSheet(@"No world exists in that slot.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Please create a new single player world in this slot using Minecraft and try again.");
+            return;
+        }
+        /* Now try to open the world... */
+        [self loadWorldAtFolder:[[panel directoryURL] path]];
+        [worldSelectionControl addItemWithTitle:[loadedWorldFolder lastPathComponent]];
+        [worldSelectionControl selectItemWithTitle:[loadedWorldFolder lastPathComponent]];
+        
+    }
 }
 
 - (IBAction)worldSelectionChanged:(id)sender
 {
-	int worldIndex = [worldSelectionControl selectedSegment] + 1;
-	[self loadWorldAtIndex:worldIndex];
+	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString *path = [paths objectAtIndex:0];
+	path = [path stringByAppendingPathComponent:@"minecraft"];
+	path = [path stringByAppendingPathComponent:@"saves"];
+    
+    
+    NSString* worldName = [worldSelectionControl titleOfSelectedItem];
+	NSString* worldPath = [path stringByAppendingPathComponent:worldName];
+    
+    NSLog(@"loadedWorldFolder: %@",loadedWorldFolder);
+    NSLog(@"worldName: %@",worldName);
+    NSLog(@"worldPath: %@",worldPath);
+
+    [self loadWorldAtFolder:worldPath];
+}
+
+- (void)loadWorldSelectionControl
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString *path = [paths objectAtIndex:0];
+	path = [path stringByAppendingPathComponent:@"minecraft"];
+	path = [path stringByAppendingPathComponent:@"saves"];
+    
+    
+    NSFileManager *filemgr;
+    NSArray *filelist;
+    NSError *fileError;
+    int count;
+    int i;
+    
+    filemgr = [NSFileManager defaultManager];
+    
+    filelist = [filemgr contentsOfDirectoryAtPath:path error:&fileError];
+    
+    count = [filelist count];
+    
+    
+    [worldSelectionControl removeAllItems];
+    for (i = 0; i < count; i++)
+    {
+        NSLog (@"%@", [filelist objectAtIndex: i]);
+        if([IJMinecraftLevel worldExistsAtFolder:[path stringByAppendingPathComponent:[filelist objectAtIndex: i]]])
+            [worldSelectionControl addItemWithTitle:[filelist objectAtIndex: i]];
+    }
+    
+    
+    
+    [filemgr release];
+    
 }
 
 - (void)saveDocument:(id)sender

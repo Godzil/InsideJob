@@ -4,26 +4,28 @@
 //
 //  Created by Adam Preble on 10/7/10.
 //  Copyright 2010 Adam Preble. All rights reserved.
+//  Changes for opening folder Copyright 2011 Manoel Trapier
 //
 
 #import <Cocoa/Cocoa.h>
 #import "NBTContainer.h"
 
 @interface IJMinecraftLevel : NBTContainer {
-
+    
 }
 
 @property (nonatomic, copy) NSArray *inventory; // Array of IJInventoryItem objects.
 @property (nonatomic, readonly) NBTContainer *worldTimeContainer;
 
 + (NSString *)pathForWorldAtIndex:(int)worldIndex;
-+ (NSString *)pathForLevelDatAtIndex:(int)worldIndex;
-+ (NSString *)pathForSessionLockAtIndex:(int)worldIndex;
 
-+ (BOOL)worldExistsAtIndex:(int)worldIndex;
++ (NSString *)pathForLevelDatAtFolder:(NSString *)worldPath;
++ (NSString *)pathForSessionLockAtFolder:(NSString *)worldPath;
 
-+ (int64_t)writeToSessionLockAtIndex:(int)worldIndex;
-+ (BOOL)checkSessionLockAtIndex:(int)worldIndex value:(int64_t)checkValue;
++ (BOOL)worldExistsAtFolder:(NSString *)worldPath;
+
++ (int64_t)writeToSessionLockAtFolder:(NSString *)worldPath;
++ (BOOL)checkSessionLockAtFolder:(NSString *)worldPath value:(int64_t)checkValue;
 
 
 @end

@@ -4,6 +4,7 @@
 //
 //  Created by Adam Preble on 10/7/10.
 //  Copyright 2010 Adam Preble. All rights reserved.
+//  Changes for opening folder Copyright 2011 Manoel Trapier
 //
 
 #import "IJMinecraftLevel.h"
@@ -41,7 +42,7 @@
 	for (NSArray *listItems in [self inventoryList].children)
 	{
 		IJInventoryItem *invItem = [[IJInventoryItem alloc] init];
-		
+        
 		invItem.itemId = [[self containerWithName:@"id" inArray:listItems].numberValue shortValue];
 		invItem.count = [[self containerWithName:@"Count" inArray:listItems].numberValue unsignedCharValue];
 		invItem.damage = [[self containerWithName:@"Damage" inArray:listItems].numberValue shortValue];
@@ -56,7 +57,7 @@
 {
 	NSMutableArray *newChildren = [NSMutableArray array];
 	NBTContainer *inventoryList = [self inventoryList];
-	
+    
 	if (inventoryList.listType != NBTTypeCompound)
 	{
 		// There appears to be a bug in the way Minecraft writes empty inventory lists; it appears to
@@ -64,7 +65,7 @@
 		NSLog(@"%s Fixing inventory list type; was %d.", __PRETTY_FUNCTION__, inventoryList.listType);
 		inventoryList.listType = NBTTypeCompound;
 	}
-	
+    
 	for (IJInventoryItem *invItem in newInventory)
 	{
 		NSArray *listItems = [NSArray arrayWithObjects:
@@ -96,20 +97,6 @@
 	return path;
 }
 
-+ (NSString *)pathForLevelDatAtIndex:(int)worldIndex
-{
-	return [[[self class] pathForWorldAtIndex:worldIndex] stringByAppendingPathComponent:@"level.dat"];
-}
-+ (NSString *)pathForSessionLockAtIndex:(int)worldIndex
-{
-	return [[[self class] pathForWorldAtIndex:worldIndex] stringByAppendingPathComponent:@"session.lock"];
-}
-
-+ (BOOL)worldExistsAtIndex:(int)worldIndex
-{
-	return [[NSFileManager defaultManager] fileExistsAtPath:[[self class] pathForLevelDatAtIndex:worldIndex]];
-}
-
 + (NSData *)dataWithInt64:(int64_t)v
 {
 	NSMutableData *data = [NSMutableData data];
@@ -128,31 +115,47 @@
 	return n;
 }
 
-+ (int64_t)writeToSessionLockAtIndex:(int)worldIndex
+/******************************************************************************/
++ (NSString *)pathForLevelDatAtFolder:(NSString *)worldPath
 {
-	NSString *path = [IJMinecraftLevel pathForSessionLockAtIndex:worldIndex];
+	return [worldPath stringByAppendingPathComponent:@"level.dat"];
+}
+
++ (NSString *)pathForSessionLockAtFolder:(NSString *)worldPath
+{
+	return [worldPath stringByAppendingPathComponent:@"session.lock"];
+}
+
++ (BOOL)worldExistsAtFolder:(NSString *)worldPath
+{
+	return [[NSFileManager defaultManager] fileExistsAtPath:[[self class] pathForLevelDatAtFolder:worldPath]];
+}
+
++ (int64_t)writeToSessionLockAtFolder:(NSString *)worldPath
+{
+	NSString *path = [IJMinecraftLevel pathForSessionLockAtFolder:worldPath];
 	NSDate *now = [NSDate date];
 	NSTimeInterval interval = [now timeIntervalSince1970];
 	int64_t milliseconds = (int64_t)(interval * 1000.0);
 	// write as number of milliseconds
-	
+    
 	NSData *data = [IJMinecraftLevel dataWithInt64:milliseconds];
 	[data writeToFile:path atomically:YES];
-	
+    
 	return milliseconds;
 }
 
-+ (BOOL)checkSessionLockAtIndex:(int)worldIndex value:(int64_t)checkValue
++ (BOOL)checkSessionLockAtFolder:(NSString *)worldPath value:(int64_t)checkValue
 {
-	NSString *path = [IJMinecraftLevel pathForSessionLockAtIndex:worldIndex];
+	NSString *path = [IJMinecraftLevel pathForSessionLockAtFolder:worldPath];
 	NSData *data = [NSData dataWithContentsOfFile:path];
-
+    
 	if (!data)
 	{
 		NSLog(@"Failed to read session lock at %@", path);
 		return NO;
 	}
-	
+    
 	int64_t milliseconds = [IJMinecraftLevel int64FromData:data];
 	return checkValue == milliseconds;
 }

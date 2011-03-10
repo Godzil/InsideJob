@@ -16,9 +16,10 @@
 
 @interface IJInventoryWindowController : NSWindowController <NSWindowDelegate, IJInventoryViewDelegate> {
 	IJMinecraftLevel *level;
+    IJMinecraftLevel *player;
 	NSArray *inventory;
 	
-	NSSegmentedControl *worldSelectionControl;
+	NSPopUpButton *worldSelectionControl;
 	NSTextField *statusTextField;
 	
 	IJInventoryView *inventoryView;
@@ -43,10 +44,11 @@
 	// Document
 	int64_t sessionLockValue;
 	int loadedWorldIndex;
-	int attemptedLoadWorldIndex;
+    NSString *loadedWorldFolder;
+    NSString *attemptedLoadWorldFolder;
 }
 
-@property (nonatomic, assign) IBOutlet NSSegmentedControl *worldSelectionControl;
+@property (nonatomic, assign) IBOutlet NSPopUpButton *worldSelectionControl;
 @property (nonatomic, assign) IBOutlet NSTextField *statusTextField;
 @property (nonatomic, assign) IBOutlet IJInventoryView *inventoryView;
 @property (nonatomic, assign) IBOutlet IJInventoryView *quickView;
@@ -56,6 +58,7 @@
 
 @property (nonatomic, retain) NSNumber *worldTime;
 
+- (IBAction)menuSelectWorldFromPath:(id)sender;
 - (IBAction)menuSelectWorld:(id)sender;
 - (IBAction)worldSelectionChanged:(id)sender;
 - (IBAction)updateItemSearchFilter:(id)sender;
