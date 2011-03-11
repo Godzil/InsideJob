@@ -16,7 +16,7 @@ Features include:
 - Experimental "time of day" editing.
 - Opening world from a folder
 
-The goal of this fork of this application is to add support for SMP World, and by the way add support of new Beta 1.3 named worlds. This will never be the official version of InsideJobs, I have no pretention to add new functionnality other than the support of named world.
+The goal of this fork of this application is to add support for SMP World, and by the way add support of new Beta 1.3 named worlds. This will never be the official version of InsideJobs, I have no pretention to add new functionnality other than the support of named world and edit SMP player.
 
 ### System Requirements
 
