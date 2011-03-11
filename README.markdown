@@ -1,4 +1,4 @@
-## Inside Job
+## Inside Job - SMP
 
 ### A Minecraft Alpha Inventory Editor for Mac OS X
 
@@ -16,7 +16,7 @@ Features include:
 - Experimental "time of day" editing.
 - Opening world from a folder
 
-The goal of this fork of this application is to add support for SMP World, and by the way add support of new Beta 1.3 named worlds. This will never be the official version of InsideJobs, I have no pretention to add new functionnality other than the support of named world.
+The goal of this fork of this application is to add support for SMP World, and by the way add support of new Beta 1.3 named worlds. This will never be the official version of InsideJobs, I have no pretention to add new functionnality other than the support of named world and edit SMP player.
 
 ### System Requirements
 
@@ -24,7 +24,9 @@ Mac OS X 10.6 Snow Leopard.
 
 ### Instructions
 
-Inside Job operates on Minecraft's level.dat files, located in _~/Library/Application Support/minecraft/saves/World*_.  While Inside Job was written to interact with Minecraft's data as safely as possible, it's entirely possible that it will destroy it completely.  Please back up your Minecraft saves folder before using Inside Job.
+Inside Job operates on Minecraft's level.dat files, located in _~/Library/Application Support/minecraft/saves/*_.  While Inside Job was written to interact with Minecraft's data as safely as possible, it's entirely possible that it will destroy it completely.  Please back up your Minecraft saves folder before using Inside Job.
+
+Inside Job-SMP have the particularity to automaticaly detect if the world have been used on a minecraft server, and allow you to select the differents players found on the server (and you can select too the default player found in the world "level.dat")
 
 Be sure to save and exit any open Minecraft worlds before running Inside Job.  Once run, Inside Job will open the first world and display your inventory.  You can change worlds using Command-1 thru 5, or using the segmented control at the top of the main window.  Note that Inside Job can only edit existing worlds.
 
