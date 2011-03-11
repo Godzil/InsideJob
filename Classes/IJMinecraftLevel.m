@@ -143,7 +143,7 @@
    if (loadedPlayer == nil)
       return [self pathForLevelDatAtFolder:worldPath];
    
-   return [[[worldPath stringByAppendingPathComponent:@"players"] stringByAppendingPathComponent:loadedPlayer] stringByAppendingPathExtension:@".dat"];
+   return [[[worldPath stringByAppendingPathComponent:@"players"] stringByAppendingPathComponent:loadedPlayer] stringByAppendingPathExtension:@"dat"];
 }
 
 + (BOOL)worldExistsAtFolder:(NSString *)worldPath

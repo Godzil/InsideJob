@@ -20,9 +20,11 @@
 - (BOOL)isDocumentEdited;
 - (void)loadWorldAtFolder:(NSString *)worldFolder;
 - (void)loadWorldSelectionControl;
+- (void)loadPlayerSelectionControl;
 @end
 
 @implementation IJInventoryWindowController
+@synthesize playerSelectionControl;
 
 @synthesize worldSelectionControl;
 @synthesize statusTextField;
@@ -98,6 +100,78 @@
     * Players/PlayerName.dat file 
     */
    
+   [armorInventory removeAllObjects];
+	[quickInventory removeAllObjects];
+	[normalInventory removeAllObjects];
+	
+	[inventoryView setItems:normalInventory];
+	[quickView setItems:quickInventory];
+	[armorView setItems:armorInventory];
+   
+   [player release];
+   player = nil;
+	[inventory release];
+	inventory = nil;
+   
+   loadedPlayer = nil;
+   
+   NSLog(@"Player name: %@",PlayerName);
+   
+   NSString *playerPath = [IJMinecraftLevel pathForPlayer:PlayerName withWorld: loadedWorldFolder];
+   
+   NSLog(@"Path: %@", playerPath);
+   
+   NSData *playerFileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:playerPath]];
+	if (!playerFileData)
+	{
+		// Error loading 
+		NSBeginCriticalAlertSheet(@"Error loading player.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"InsideJob was unable to load the level at %@.", playerPath);
+		return;
+	}
+   
+   player = [[IJMinecraftLevel nbtContainerWithData:playerFileData] retain];
+	inventory = [[player inventory] retain];
+	
+	// Add placeholder inventory items:
+	
+	for (int i = 0; i < IJInventorySlotQuickLast + 1 - IJInventorySlotQuickFirst; i++)
+		[quickInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotQuickFirst + i]];
+	
+	for (int i = 0; i < IJInventorySlotNormalLast + 1 - IJInventorySlotNormalFirst; i++)
+		[normalInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotNormalFirst + i]];
+	
+	for (int i = 0; i < IJInventorySlotArmorLast + 1 - IJInventorySlotArmorFirst; i++)
+		[armorInventory addObject:[IJInventoryItem emptyItemWithSlot:IJInventorySlotArmorFirst + i]];
+	
+	
+	// Overwrite the placeholders with actual inventory:
+	
+	for (IJInventoryItem *item in inventory)
+	{
+		if (IJInventorySlotQuickFirst <= item.slot && item.slot <= IJInventorySlotQuickLast)
+		{
+			[quickInventory replaceObjectAtIndex:item.slot - IJInventorySlotQuickFirst withObject:item];
+		}
+		else if (IJInventorySlotNormalFirst <= item.slot && item.slot <= IJInventorySlotNormalLast)
+		{
+			[normalInventory replaceObjectAtIndex:item.slot - IJInventorySlotNormalFirst withObject:item];
+		}
+		else if (IJInventorySlotArmorFirst <= item.slot && item.slot <= IJInventorySlotArmorLast)
+		{
+			[armorInventory replaceObjectAtIndex:item.slot - IJInventorySlotArmorFirst withObject:item];
+		}
+	}
+	
+   //	NSLog(@"normal: %@", normalInventory);
+   //	NSLog(@"quick: %@", quickInventory);
+	
+	[inventoryView setItems:normalInventory];
+	[quickView setItems:quickInventory];
+	[armorView setItems:armorInventory];
+	
+	[self setDocumentEdited:NO];
+	statusTextField.stringValue = @"Player loaded!";
+	loadedPlayer = [PlayerName retain];
 }
 
 - (void)loadWorldAtFolder:(NSString *)worldPath
@@ -109,6 +183,11 @@
 		return;
 	}
 	
+   NSFileManager *filemgr;
+   NSArray *filelist;
+   NSError *fileError;
+   int count, i;
+   
 	[armorInventory removeAllObjects];
 	[quickInventory removeAllObjects];
 	[normalInventory removeAllObjects];
@@ -156,13 +235,31 @@
 	
 	[self willChangeValueForKey:@"worldTime"];
 	
+   [playerSelectionControl setHidden: YES];
    /* Now search for first player .dat file (but by default try to load from level.dat */
-#if 1
+   /* Verify that a "Player" folder exist. If not do nt show the player list */
+   filemgr = [NSFileManager defaultManager];
+   
+   filelist = [filemgr contentsOfDirectoryAtPath:worldPath error:&fileError];
+   
+   count = [filelist count];
+   
+   for (i = 0; i < count; i++)
+   {
+      NSLog (@"File in world/ %@", [filelist objectAtIndex: i]);
+      if ([[filelist objectAtIndex: i] isEqualTo: @"players"])
+      {
+         [playerSelectionControl setHidden: NO];
+         [self loadPlayerSelectionControl];
+         break;
+      }
+   }
+   
    loadedPlayer = nil;
    NSString *playerPath = [IJMinecraftLevel pathForPlayer:loadedPlayer withWorld:worldPath];
-#else
-   NSString *playerPath = [worldPath stringByAppendingString:@"/players/Godzil.dat"];
-#endif
+
+   /* Now load level.dat as if i is not a SMP. */
+   
    NSData *playerFileData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:playerPath]];
 	if (!playerFileData)
 	{
@@ -215,11 +312,11 @@
 	[armorView setItems:armorInventory];
 	
 	[self setDocumentEdited:NO];
-	statusTextField.stringValue = @"";
+	statusTextField.stringValue = @"World loaded!";
 	loadedWorldFolder = [worldPath retain];
-    
-    NSLog(@"%@",loadedWorldFolder);
-    NSLog(@"%@",worldPath);
+
+   NSLog(@"%@",loadedWorldFolder);
+   NSLog(@"%@",worldPath);
     
 }
 
@@ -278,17 +375,6 @@
 			return;
 		}
 	}
-   // Remove a previously-created .insidejobbackup, if it exists:
-	if ([[NSFileManager defaultManager] fileExistsAtPath:backupLevelPath])
-	{
-		success = [[NSFileManager defaultManager] removeItemAtPath:backupPlayerPath error:&error];
-		if (!success)
-		{
-			NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
-			NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to remove the prior backup of this level file:\n%@", [error localizedDescription]);
-			return;
-		}
-	}
 	
 	// Create the backup:
 	success = [[NSFileManager defaultManager] copyItemAtPath:levelPath toPath:backupLevelPath error:&error];
@@ -299,15 +385,7 @@
 		return;
 	}
 
-   success = [[NSFileManager defaultManager] copyItemAtPath:playerPath toPath:backupPlayerPath error:&error];
-	if (!success)
-	{
-		NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
-		NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to create a backup of the existing level file:\n%@", [error localizedDescription]);
-		return;
-	}
-
-	// Write the new level.dat out:
+   // Write the new level.dat out:
 	success = [[player writeData] writeToURL:[NSURL fileURLWithPath:levelPath] options:0 error:&error];
    
 	if (!success)
@@ -321,20 +399,58 @@
 			NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [restoreError localizedDescription]);
 			NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to save to the existing level file, and the backup could not be restored.\n%@\n%@", [error localizedDescription], [restoreError localizedDescription]);
 		}
-		
-      success = [[NSFileManager defaultManager] copyItemAtPath:backupPlayerPath toPath:playerPath error:&restoreError];
-		if (!success)
-		{
-			NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [restoreError localizedDescription]);
-			NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to save to the existing level file, and the backup could not be restored.\n%@\n%@", [error localizedDescription], [restoreError localizedDescription]);
-		}
 		else
-		{
-			NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to save to the existing level file, and the backup was successfully restored.\n%@", [error localizedDescription]);
-		}
+      {
+         NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to save to the existing level file, and the backup was successfully restored.\n%@", [error localizedDescription]);
+      }
 		return;
 	}
-	
+
+   if (playerPath != levelPath)
+   {
+      
+      // Remove a previously-created .insidejobbackup, if it exists:
+      if ([[NSFileManager defaultManager] fileExistsAtPath:backupPlayerPath])
+      {
+         success = [[NSFileManager defaultManager] removeItemAtPath:backupPlayerPath error:&error];
+         if (!success)
+         {
+            NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
+            NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to remove   the prior backup of this player file:\n%@", [error localizedDescription]);
+            return;
+         }
+      }
+      
+      success = [[NSFileManager defaultManager] copyItemAtPath:playerPath toPath:backupPlayerPath error:&error];
+      if (!success)
+      {
+         NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
+         NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to create a backup of the existing player file:\n%@", [error localizedDescription]);
+         return;
+      }
+
+      // Write the new player.dat out:
+      success = [[player writeData] writeToURL:[NSURL fileURLWithPath:playerPath] options:0 error:&error];
+   
+      if (!success)
+      {
+         NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [error localizedDescription]);
+		
+         NSError *restoreError = nil;
+		
+         success = [[NSFileManager defaultManager] copyItemAtPath:backupPlayerPath toPath:playerPath error:&restoreError];
+         if (!success)
+         {
+            NSLog(@"%s:%d %@", __PRETTY_FUNCTION__, __LINE__, [restoreError localizedDescription]);
+            NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to save to the existing player file, and the backup could not be restored.\n%@\n%@", [error localizedDescription], [restoreError localizedDescription]);
+         }
+         else
+         {
+            NSBeginCriticalAlertSheet(@"An error occurred while saving.", @"Dismiss", nil, nil, self.window, nil, nil, nil, nil, @"Inside Job was unable to save to the existing player file, and the backup was successfully restored.\n%@", [error localizedDescription]);
+         }
+         return;
+      }
+   }
 	[self setDocumentEdited:NO];
 	statusTextField.stringValue = @"Saved.";
 }
@@ -399,14 +515,14 @@
 	path = [path stringByAppendingPathComponent:@"saves"];
     
     
-    NSString* worldName = [worldSelectionControl titleOfSelectedItem];
+   NSString* worldName = [worldSelectionControl titleOfSelectedItem];
 	NSString* worldPath = [path stringByAppendingPathComponent:worldName];
     
-    NSLog(@"loadedWorldFolder: %@",loadedWorldFolder);
-    NSLog(@"worldName: %@",worldName);
-    NSLog(@"worldPath: %@",worldPath);
+   NSLog(@"loadedWorldFolder: %@",loadedWorldFolder);
+   NSLog(@"worldName: %@",worldName);
+   NSLog(@"worldPath: %@",worldPath);
 
-    [self loadWorldAtFolder:worldPath];
+   [self loadWorldAtFolder:worldPath];
 }
 
 - (void)loadWorldSelectionControl
@@ -440,6 +556,37 @@
     
     [filemgr release];
     
+}
+
+- (void)loadPlayerSelectionControl
+{
+	NSString *playerPath = loadedWorldFolder; 
+   playerPath = [playerPath stringByAppendingPathComponent:@"players"];
+   
+   NSFileManager *filemgr;
+   NSArray *filelist;
+   NSError *fileError;
+   int count;
+   int i;
+   
+   filemgr = [NSFileManager defaultManager];
+   
+   filelist = [filemgr contentsOfDirectoryAtPath:playerPath error:&fileError];
+   
+   count = [filelist count];
+      
+   [playerSelectionControl removeAllItems];
+   
+   [playerSelectionControl addItemWithTitle:@"World default"];
+   
+   for (i = 0; i < count; i++)
+   {
+      NSLog (@"%@", [filelist objectAtIndex: i]);
+      [playerSelectionControl addItemWithTitle:[[filelist objectAtIndex: i] stringByDeletingPathExtension]];
+   }
+   
+   [filemgr release];
+   
 }
 
 - (void)saveDocument:(id)sender
@@ -484,13 +631,6 @@
 	[self setDocumentEdited:YES];
 }
 
-- (NSString *)playerName
-{
-	return @"Godzil";
-}
-- (void)setPlayerName:(NSString *)playerName
-{
-}
 
 - (void)calcTimePoints:(int)number
 {
@@ -620,6 +760,13 @@
 - (IBAction)loadInventoryItems:(id)sender
 {
 	[self loadInventory];
+}
+
+- (IBAction)playerSelectionChanged:(id)sender
+{
+   [self loadWorldPlayerInventory: [playerSelectionControl titleOfSelectedItem]];
+      
+   //   [self loadWorldAtFolder:worldPath];
 }
 
 

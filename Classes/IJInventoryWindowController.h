@@ -47,6 +47,7 @@
 	NSString *loadedWorldFolder;
 	NSString *attemptedLoadWorldFolder;
    NSString *loadedPlayer;
+   NSPopUpButton *playerSelectionControl;
 }
 
 @property (nonatomic, assign) IBOutlet NSPopUpButton *worldSelectionControl;
@@ -56,9 +57,8 @@
 @property (nonatomic, assign) IBOutlet IJInventoryView *armorView;
 @property (nonatomic, assign) IBOutlet NSSearchField *itemSearchField;
 @property (nonatomic, assign) IBOutlet NSTableView *itemTableView;
-
 @property (nonatomic, retain) NSNumber *worldTime;
-@property (nonatomic, retain) NSString *playerName;
+@property (nonatomic, assign) IBOutlet NSPopUpButton *playerSelectionControl;
 
 - (IBAction)menuSelectWorldFromPath:(id)sender;
 - (IBAction)menuSelectWorld:(id)sender;
@@ -75,5 +75,6 @@
 - (IBAction)emptyInventory:(id)sender;
 - (IBAction)saveInventoryItems:(id)sender;
 - (IBAction)loadInventoryItems:(id)sender;
+- (IBAction)playerSelectionChanged:(id)sender;
 
 @end
