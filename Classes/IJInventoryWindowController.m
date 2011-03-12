@@ -99,6 +99,7 @@
     * If passing NULL to PlayerName, we will use level.dat instead of
     * Players/PlayerName.dat file 
     */
+   NSString *playerPath;
    
    [armorInventory removeAllObjects];
 	[quickInventory removeAllObjects];
@@ -116,8 +117,10 @@
    loadedPlayer = nil;
    
    NSLog(@"Player name: %@",PlayerName);
-   
-   NSString *playerPath = [IJMinecraftLevel pathForPlayer:PlayerName withWorld: loadedWorldFolder];
+   if ([PlayerName isEqualToString: @"World default"])
+      playerPath = [IJMinecraftLevel pathForPlayer:nil withWorld: loadedWorldFolder];   
+   else
+      playerPath = [IJMinecraftLevel pathForPlayer:PlayerName withWorld: loadedWorldFolder];   
    
    NSLog(@"Path: %@", playerPath);
    
@@ -582,7 +585,9 @@
    for (i = 0; i < count; i++)
    {
       NSLog (@"%@", [filelist objectAtIndex: i]);
-      [playerSelectionControl addItemWithTitle:[[filelist objectAtIndex: i] stringByDeletingPathExtension]];
+      /* Get only .dat file */
+      if ([[[filelist objectAtIndex: i] pathExtension] isEqualToString:@"dat"])
+         [playerSelectionControl addItemWithTitle:[[filelist objectAtIndex: i] stringByDeletingPathExtension]];
    }
    
    [filemgr release];
@@ -765,8 +770,6 @@
 - (IBAction)playerSelectionChanged:(id)sender
 {
    [self loadWorldPlayerInventory: [playerSelectionControl titleOfSelectedItem]];
-      
-   //   [self loadWorldAtFolder:worldPath];
 }
 
 
