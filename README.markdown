@@ -2,7 +2,7 @@
 
 ### A Minecraft Alpha Inventory Editor for Mac OS X
 
-![Inside Job Screenshot](http://adampreble.net/images/InsideJob.png)
+![Inside Job Screenshot](http://godzil.net/projets/InsideJobs/InsideJobs-SMP.png)
 
 Inside Job was written in early October 2010 by [Adam Preble](http://adampreble.net).
 
@@ -40,11 +40,16 @@ After changing your inventory you will need to save the currently open world usi
 
 ### Release Notes
 
+#### 1.0.2-smp - March 11, 2011
+
+- Now players .dat file are correctly listed and selectable, we even can save it!
+- Merges changes from Nickloose, we are now able to list SSP worlds and open them.
+- Minor other changes
+
 #### 1.0.2-smp - March 5, 2011
 
 - Major changes on world internal selection, we no longuer use World Index as ID, but the world path. We currently still have "slots" on the interface, but it should be changed soon to use a popup button with the list of worlds.
-- Now we have separated level.dat form player.dat for beeing SMP friendly.
-- Start to use externalised resources string to be more easy to translate the app.
+- Now we have separated level.dat from player.dat for beeing SMP friendly.
 - Add missing Redstone repeater
 - Forked from official version
 

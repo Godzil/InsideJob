@@ -4,6 +4,8 @@
 //
 //  Created by Adam Preble on 10/7/10.
 //  Copyright 2010 Adam Preble. All rights reserved.
+//  Changes for SMP World (external player support) ©2011 Manoel Trapier
+//  Changes for searching Named SSP world and GUI changes ©2011 Nickloose
 //
 
 #import "IJInventoryWindowController.h"
